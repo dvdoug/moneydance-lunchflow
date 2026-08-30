@@ -47,6 +47,11 @@ Every shipped `module_build` bump must add 1–2 high-level lines to [CHANGELOG.
 
 Moneydance is a desktop app. CI **cannot** open a data file or click Import. It runs `./gradlew test` (API parser, FITIDs, dates, settings) on every pull request and push.
 
-On **master** (not PRs) it also packages an **unsigned** `lunchflow-unsigned.mxt`. That is a zip of compiled classes plus `meta_info.dict` — the PHP analogue of a built Phar, not a source tarball. Download it from the workflow run: **Actions → CI → (green run) → Artifacts**. Moneydance will warn that the signature is unrecognized until Infinite Kind counter-signs a release. Local `gradlew lunchflow` still signs with your gitignored key.
+On **master** it also packages an **unsigned** `.mxt` (compiled classes + `meta_info.dict`, like a Phar, not a source tarball).
+
+- **Workflow artifact** (Actions → run → Artifacts): convenient, expires in 90 days.
+- **GitHub Release** on tag `v{module_build}`: the lasting download. CI creates the tag and Release the first time that build number hits master; it will not move or replace an existing tag (module_build is irrevocable). Changelog text for that version is the release notes.
+
+Moneydance will warn that the signature is unrecognized until Infinite Kind counter-signs a store build. Local `gradlew lunchflow` still signs with your gitignored key.
 
 DevKit jars are not in git. CI (and a first clone) run `fetchMdJars`, which pulls `moneydance-dev.jar` / `extadmin.jar` from [moneydance_open](https://github.com/TheInfiniteKind/moneydance_open).

@@ -154,7 +154,7 @@ DevKit / API: https://infinitekind.com/developer and https://infinitekind.com/de
 
 ## Verification
 
-There is no headless Moneydance. GitHub Actions (`.github/workflows/ci.yml`) runs `./gradlew test` on PRs and, on master, uploads `dist/lunchflow-unsigned.mxt` as a workflow artifact. That does **not** exercise the Swing window or Import.
+There is no headless Moneydance. GitHub Actions (`.github/workflows/ci.yml`) runs `./gradlew test` on PRs. On master it also uploads a 90-day workflow artifact and, the first time a given `module_build` appears, a GitHub Release tagged `vN` with the unsigned `.mxt` (permanent until someone deletes the release). Do not retag or overwrite an existing `vN`. That does **not** exercise the Swing window or Import.
 
 1. Unit-test the API client and FITID / amount conversion **without** the Moneydance UI (mock HTTP).
 2. Install the `.mxt` into the throwaway file **Lunch Flow testing** (or similar). Owner may also alpha the main file after **File → Export Backup**. Agents must not request production data or keys. Map, Import twice, confirm no extra blue dots.

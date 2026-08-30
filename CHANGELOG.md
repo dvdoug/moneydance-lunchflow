@@ -10,7 +10,7 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 ## [Unreleased]
 
 ### Added
-- GitHub Actions CI: unit tests on PRs; unsigned `.mxt` artifact on master.
+- GitHub Actions CI: unit tests on PRs; unsigned `.mxt` on master as a 90-day workflow artifact and a lasting GitHub Release (`v{module_build}`).
 
 ## [31] - 2026-08-29
 
