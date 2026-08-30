@@ -1,0 +1,8 @@
+---
+description: Lunch Flow for Moneydance — always-on project rules
+alwaysApply: true
+---
+
+Follow **AGENTS.md** at the repository root. That file is the source of truth.
+
+This is a Moneydance Kotlin extension (`id: lunchflow`) that imports bank data from the Lunch Flow **Personal API**. Never hardcode API keys. Do not use the Platform API. Import via `OnlineTxn` + `showDownloadedTxns` (do not create `ParentTxn`s). Posted FITID `lunchflow:{accountId}:{transactionId}`. Pending set-reconcile unconfirmed `lunchflow:pending:…` only.

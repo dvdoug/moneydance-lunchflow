@@ -1,0 +1,5 @@
+# Copy to userconfig/user.properties (gitignored) and replace the passphrase.
+# Then: gradlew genKeys
+extprivkeypass=change-me
+extprivkeyfile=userconfig/priv_key
+extpubkeyfile=userconfig/pub_key

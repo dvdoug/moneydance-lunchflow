@@ -1,0 +1,66 @@
+# Build
+.gradle/
+build/
+dist/
+out/
+*.class
+*.mxt
+
+# Moneydance DevKit signing — never commit
+privkey
+privkey.cipher
+privkey*
+pubkey
+*.privkey
+extprivkeypass*
+local.properties
+gradle.properties.local
+
+# DevKit jars if they cannot be redistributed; drop in locally
+/lib/*.jar
+/lib/extadmin.jar
+/lib/moneydance-dev.jar
+/lib/moneydance.jar
+
+# Local signing config
+user.properties
+userconfig/priv_key
+userconfig/pub_key
+userconfig/user.properties
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+api-key*
+*secret*
+
+# Moneydance data (if anyone copies a file into the repo)
+*.moneydance/
+*.moneydancearchive
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Agent local overrides (not shared)
+AGENTS.override.md
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Kotlin / Java
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+hs_err_pid*
+replay_pid*

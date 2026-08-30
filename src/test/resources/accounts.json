@@ -1,0 +1,24 @@
+{
+  "accounts": [
+    {
+      "id": 42,
+      "connection_id": 7,
+      "name": "Everyday",
+      "institution_name": "Example Bank",
+      "institution_logo": "https://example.test/logo.png",
+      "provider": "gocardless",
+      "currency": "GBP",
+      "status": "ACTIVE"
+    },
+    {
+      "id": 99,
+      "connection_id": 7,
+      "name": "Credit card",
+      "institution_name": "Example Bank",
+      "provider": "gocardless",
+      "currency": "GBP",
+      "status": "ACTIVE"
+    }
+  ],
+  "total": 2
+}

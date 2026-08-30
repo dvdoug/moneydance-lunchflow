@@ -1,0 +1,238 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    id "java"
+    id "org.jetbrains.kotlin.jvm" version "2.3.21"
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    compilerJdk = 21
+    targetRelease = 17
+    extensionId = "lunchflow"
+    libDir = file("lib")
+    distDir = file("dist")
+    userConfigDir = file("userconfig")
+    privKeyFile = file("${userConfigDir}/priv_key")
+    pubKeyFile = file("${userConfigDir}/pub_key")
+    privKeyId = "99"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(compilerJdk)
+    }
+}
+
+kotlin {
+    jvmToolchain(compilerJdk)
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = targetRelease
+    options.encoding = "UTF-8"
+}
+
+tasks.withType(KotlinCompile).configureEach {
+    compilerOptions {
+        languageVersion.set(KotlinVersion.KOTLIN_1_9)
+        apiVersion.set(KotlinVersion.KOTLIN_1_9)
+        jvmTarget.set(JvmTarget.JVM_17)
+        freeCompilerArgs.add("-jvm-default=no-compatibility")
+    }
+}
+
+def userPropsFile = file("${userConfigDir}/user.properties")
+if (userPropsFile.exists()) {
+    def loaded = new Properties()
+    userPropsFile.withInputStream { loaded.load(it) }
+    loaded.each { k, v -> project.ext.set(k.toString(), v) }
+}
+
+def mdDevJar = file("${libDir}/moneydance-dev.jar")
+def extAdminJar = file("${libDir}/extadmin.jar")
+def kotlinStdlibJar = file("${libDir}/kotlin-stdlib-1.9.21.jar")
+
+configurations {
+    mdTools {
+        canBeConsumed = false
+        canBeResolved = true
+    }
+}
+
+dependencies {
+    compileOnly files(mdDevJar)
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:1.9.21"
+    mdTools files(mdDevJar, extAdminJar, kotlinStdlibJar)
+    testImplementation files(mdDevJar)
+    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.21"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.9.21"
+}
+
+def requireMdJars = {
+    if (!mdDevJar.exists()) {
+        throw new GradleException("Missing ${mdDevJar}. Copy moneydance-dev.jar into lib/ (see lib/README.md).")
+    }
+    if (!extAdminJar.exists()) {
+        throw new GradleException("Missing ${extAdminJar}. Copy extadmin.jar into lib/ (see lib/README.md).")
+    }
+}
+
+def resolveKeyPass = {
+    System.getProperty("moneydance_key_pass")?.trim() ?:
+        System.getenv("MONEYDANCE_KEY_PASS")?.trim() ?:
+        (findProperty("extprivkeypass")?.toString()?.trim())
+}
+
+sourceSets {
+    mdjava {
+        java.srcDirs = ["src/main/java"]
+        compileClasspath += configurations.compileClasspath
+    }
+    main {
+        java.srcDirs = []
+        kotlin.srcDirs = ["src/main/kotlin"]
+        resources.srcDirs = ["src/main/resources"]
+        compileClasspath += sourceSets.mdjava.output
+        runtimeClasspath += sourceSets.mdjava.output
+    }
+    test {
+        kotlin.srcDirs = ["src/test/kotlin"]
+        resources.srcDirs = ["src/test/resources"]
+        compileClasspath += sourceSets.mdjava.output
+        runtimeClasspath += sourceSets.mdjava.output
+    }
+}
+
+tasks.named("test", Test).configure {
+    useJUnit()
+}
+
+tasks.named("compileKotlin").configure {
+    dependsOn("compileMdjavaJava")
+}
+
+// OneDrive marks files in the repo as online-only; compile into %TEMP% instead.
+layout.buildDirectory.set(file("${System.getProperty('java.io.tmpdir')}/moneydance-lunchflow-build"))
+
+tasks.register("ensureDist") {
+    doLast { distDir.mkdirs() }
+}
+
+tasks.register("ensureUserConfig") {
+    doLast { userConfigDir.mkdirs() }
+}
+
+tasks.register("genKeys", JavaExec) {
+    group = "build"
+    description = "Generate local Moneydance extension signing keys"
+    dependsOn "ensureUserConfig"
+    classpath = configurations.mdTools
+    mainClass.set("com.moneydance.admin.KeyAdmin")
+    args "genkey", privKeyFile.absolutePath, pubKeyFile.absolutePath
+    standardInput = System.in
+    doFirst {
+        requireMdJars()
+        if (!resolveKeyPass()) {
+            throw new GradleException("Set MONEYDANCE_KEY_PASS or extprivkeypass before genKeys.")
+        }
+        def pass = resolveKeyPass()
+        systemProperty "moneydance_key_pass", pass
+    }
+}
+
+def mxtWorkDir = layout.buildDirectory.dir("mxt")
+def mxtWorkFile = layout.buildDirectory.file("mxt/${extensionId}.mxt")
+def mxtDistFile = file("${distDir}/${extensionId}.mxt")
+
+tasks.register("jarUnsigned", Jar) {
+    group = "build"
+    description = "Package lunchflow.mxt without signing"
+    dependsOn "classes", "ensureDist"
+    archiveBaseName.set(extensionId)
+    archiveExtension.set("mxt")
+    destinationDirectory.set(mxtWorkDir)
+    from sourceSets.main.output
+    from sourceSets.mdjava.output
+    doFirst {
+        requireMdJars()
+        def work = mxtWorkFile.get().asFile
+        if (work.exists()) work.delete()
+    }
+}
+
+tasks.register("signExtension", JavaExec) {
+    group = "build"
+    description = "Sign dist/lunchflow.mxt with the local key"
+    dependsOn "jarUnsigned"
+    workingDir = mxtWorkDir
+    classpath = configurations.mdTools
+    mainClass.set("com.moneydance.admin.KeyAdmin")
+    args "signextjar",
+        privKeyFile.absolutePath,
+        privKeyId,
+        extensionId,
+        mxtWorkFile.get().asFile.absolutePath
+    standardInput = System.in
+    doFirst {
+        requireMdJars()
+        def pass = resolveKeyPass()
+        if (!pass) {
+            throw new GradleException("Set MONEYDANCE_KEY_PASS or extprivkeypass before signing.")
+        }
+        if (!privKeyFile.exists()) {
+            throw new GradleException("Missing ${privKeyFile}. Run genKeys first.")
+        }
+        systemProperty "moneydance_key_pass", pass
+        mxtWorkDir.get().asFile.mkdirs()
+    }
+    doLast {
+        def workDir = mxtWorkDir.get().asFile
+        def work = mxtWorkFile.get().asFile
+        def signed = new File(workDir, "s-${extensionId}.mxt")
+        if (signed.exists()) {
+            if (work.exists()) work.delete()
+            if (!signed.renameTo(work)) {
+                throw new GradleException("Failed to rename signed mxt")
+            }
+        }
+        if (!work.exists() || work.length() == 0) {
+            throw new GradleException("Signed extension not created: ${work}")
+        }
+        distDir.mkdirs()
+        def dest = mxtDistFile
+        try {
+            java.nio.file.Files.copy(
+                work.toPath(),
+                dest.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+            )
+            logger.lifecycle("Built ${dest}")
+        } catch (Exception e) {
+            def alt = file("${distDir}/${extensionId}-new.mxt")
+            java.nio.file.Files.copy(
+                work.toPath(),
+                alt.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+            )
+            logger.lifecycle("dist/${extensionId}.mxt is in use; wrote ${alt}")
+        }
+    }
+}
+
+tasks.register(extensionId) {
+    group = "build"
+    description = "Compile, package, and sign Lunch Flow (.mxt)"
+    dependsOn "signExtension"
+}
+
+tasks.named("clean", Delete).configure {
+    delete distDir
+}
+
+defaultTasks extensionId
