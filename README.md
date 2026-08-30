@@ -67,6 +67,8 @@ Kotlin on the JVM, packaged as a signed `.mxt`. Needs JDK 21+ and two jars in `l
 gradlew.bat lunchflow
 ```
 
+CI: GitHub Actions runs unit tests on pull requests. Pushes to `master` also attach an **unsigned** `lunchflow-unsigned.mxt` on the workflow run (Actions → Artifacts). That is a compiled package, not PHP-style source. Moneydance cannot be driven from the CLI, so Import still needs a human.
+
 Install `dist/lunchflow.mxt` into the throwaway file **Lunch Flow testing** (drag onto the window, or **Extensions → Manage Extensions → Add from File…**). Same id replaces the previous build. Restarting Moneydance without that step does not pick up new code. The owner may also alpha the main file after **File → Export Backup**. Expect an unsigned/unrecognized-signature warning until Infinite Kind counter-signs a release.
 
 ## License

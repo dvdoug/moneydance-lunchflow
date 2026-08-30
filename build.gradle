@@ -74,12 +74,41 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.9.21"
 }
 
+def mdOpenLibBase = "https://raw.githubusercontent.com/TheInfiniteKind/moneydance_open/refs/heads/main/lib"
+
+tasks.register("fetchMdJars") {
+    group = "build"
+    description = "Download Moneydance DevKit jars into lib/ if missing"
+    doLast {
+        libDir.mkdirs()
+        [
+            "moneydance-dev.jar",
+            "extadmin.jar",
+            "kotlin-stdlib-1.9.21.jar"
+        ].each { name ->
+            def dest = file("${libDir}/${name}")
+            if (dest.exists() && dest.length() > 10_000) {
+                return
+            }
+            def url = new URI("${mdOpenLibBase}/${name}").toURL()
+            logger.lifecycle("Downloading ${url}")
+            dest.withOutputStream { os ->
+                url.openStream().withCloseable { ins -> ins.transferTo(os) }
+            }
+            if (dest.length() < 10_000) {
+                dest.delete()
+                throw new GradleException("Download too small (not a jar?): ${dest}")
+            }
+        }
+    }
+}
+
 def requireMdJars = {
     if (!mdDevJar.exists()) {
-        throw new GradleException("Missing ${mdDevJar}. Copy moneydance-dev.jar into lib/ (see lib/README.md).")
+        throw new GradleException("Missing ${mdDevJar}. Run fetchMdJars or copy jars into lib/ (see lib/README.md).")
     }
     if (!extAdminJar.exists()) {
-        throw new GradleException("Missing ${extAdminJar}. Copy extadmin.jar into lib/ (see lib/README.md).")
+        throw new GradleException("Missing ${extAdminJar}. Run fetchMdJars or copy jars into lib/ (see lib/README.md).")
     }
 }
 
@@ -111,6 +140,10 @@ sourceSets {
 
 tasks.named("test", Test).configure {
     useJUnit()
+}
+
+tasks.named("compileMdjavaJava").configure {
+    dependsOn("fetchMdJars")
 }
 
 tasks.named("compileKotlin").configure {
@@ -222,6 +255,26 @@ tasks.register("signExtension", JavaExec) {
             )
             logger.lifecycle("dist/${extensionId}.mxt is in use; wrote ${alt}")
         }
+    }
+}
+
+tasks.register("copyUnsignedMxt") {
+    group = "build"
+    description = "Copy the unsigned .mxt to dist/lunchflow-unsigned.mxt (CI artifact)"
+    dependsOn "jarUnsigned"
+    doLast {
+        def src = mxtWorkFile.get().asFile
+        if (!src.exists() || src.length() == 0) {
+            throw new GradleException("Unsigned mxt missing: ${src}")
+        }
+        distDir.mkdirs()
+        def dest = file("${distDir}/${extensionId}-unsigned.mxt")
+        java.nio.file.Files.copy(
+            src.toPath(),
+            dest.toPath(),
+            java.nio.file.StandardCopyOption.REPLACE_EXISTING
+        )
+        logger.lifecycle("Built ${dest}")
     }
 }
 

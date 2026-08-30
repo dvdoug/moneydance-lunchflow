@@ -42,3 +42,11 @@ Use a **throwaway** Moneydance data file and a Lunch Flow API destination you ca
 If you change behaviour, IDs, or commands, update `AGENTS.md` and the matching file under `docs/` in the same change. Keep `CLAUDE.md`, `GEMINI.md`, and `.github/copilot-instructions.md` as pointers, not a second copy of the rules.
 
 Every shipped `module_build` bump must add 1–2 high-level lines to [CHANGELOG.md](CHANGELOG.md) (Keep a Changelog). Commit each iteration, including docs-only work; do not leave the tree uncommitted.
+
+## GitHub Actions CI
+
+Moneydance is a desktop app. CI **cannot** open a data file or click Import. It runs `./gradlew test` (API parser, FITIDs, dates, settings) on every pull request and push.
+
+On **master** (not PRs) it also packages an **unsigned** `lunchflow-unsigned.mxt`. That is a zip of compiled classes plus `meta_info.dict` — the PHP analogue of a built Phar, not a source tarball. Download it from the workflow run: **Actions → CI → (green run) → Artifacts**. Moneydance will warn that the signature is unrecognized until Infinite Kind counter-signs a release. Local `gradlew lunchflow` still signs with your gitignored key.
+
+DevKit jars are not in git. CI (and a first clone) run `fetchMdJars`, which pulls `moneydance-dev.jar` / `extadmin.jar` from [moneydance_open](https://github.com/TheInfiniteKind/moneydance_open).

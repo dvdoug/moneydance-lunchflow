@@ -125,7 +125,7 @@ JDK `java.net.http.HttpClient` (follow `NORMAL` redirects; call `www`). JSON via
 
 Layer the code so `LunchFlowClient` and FITID / amount conversion have pure unit tests with fixture JSON. The FeatureModule and Swing stay thin.
 
-A full GUI test requires installing an `.mxt` into a throwaway Moneydance file. Do not use production data files in automated tests.
+A full GUI test requires installing an `.mxt` into a throwaway Moneydance file. Do not use production data files in automated tests. GitHub Actions runs unit tests only; master also uploads an unsigned `.mxt` artifact.
 
 ## Build
 

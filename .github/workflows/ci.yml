@@ -1,0 +1,54 @@
+# Tests on every PR and push. On master, also package an unsigned .mxt
+# (a zip of compiled classes + meta_info.dict). Moneydance is a desktop app;
+# this CI cannot click Import. Install the artifact locally to dogfood.
+#
+# The unsigned build is what Infinite Kind wants for audit. Local `gradlew lunchflow`
+# still signs with your gitignored key. GitHub Actions artifacts are files attached
+# to a workflow run (Actions → run → Artifacts), not Composer/Packagist source.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Unit tests
+        run: ./gradlew --no-daemon test
+
+      - name: Package unsigned extension
+        if: github.event_name != 'pull_request'
+        run: ./gradlew --no-daemon copyUnsignedMxt
+
+      - name: Read module_build
+        if: github.event_name != 'pull_request'
+        id: ver
+        run: |
+          build=$(sed -n 's/.*"module_build" *= *"\([0-9][0-9]*\)".*/\1/p' \
+            src/main/resources/com/moneydance/modules/features/lunchflow/meta_info.dict | head -1)
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+
+      - name: Upload unsigned .mxt
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: lunchflow-unsigned-v${{ steps.ver.outputs.build }}
+          path: dist/lunchflow-unsigned.mxt
+          if-no-files-found: error
+          retention-days: 90

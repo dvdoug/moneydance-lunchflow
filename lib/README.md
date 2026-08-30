@@ -1,6 +1,6 @@
 # Local Moneydance build jars
 
-These files are **not** in git. Copy them here before the first build:
+These files are **not** in git. `gradlew fetchMdJars` (also a dependency of compile) downloads them from [moneydance_open](https://github.com/TheInfiniteKind/moneydance_open) `lib/` if missing. You can still copy them by hand:
 
 | File | From |
 | --- | --- |
