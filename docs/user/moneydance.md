@@ -1,7 +1,5 @@
 # Use the extension in Moneydance
 
-These steps match the **Lunch Flow** window in Moneydance. Button names can change in a later version; if they do, this page should be updated in the same change.
-
 Take a **File → Export Backup** before the first import on a file you care about.
 
 ## Install

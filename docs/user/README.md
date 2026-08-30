@@ -8,4 +8,4 @@ These pages are for people who want to import bank transactions into Moneydance.
 
 This extension is **unofficial**. Lunch Flow and Moneydance are separate products; we are not affiliated with either.
 
-GitHub shows these files as normal web pages. If a screenshot and the window on your computer disagree, trust the labelled buttons on screen and [tell us](https://github.com/dvdoug/moneydance-lunchflow/issues).
+If something in these pages does not match what you see, [tell us](https://github.com/dvdoug/moneydance-lunchflow/issues).
