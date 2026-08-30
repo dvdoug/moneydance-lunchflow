@@ -46,7 +46,7 @@ That is the right product for a marketplace extension:
 1. User has Moneydance and a Lunch Flow account with banks connected.
 2. In Lunch Flow: **Destinations → Add Destination → API**. Copy the key. On that destination’s **Account Access** tab, enable every account that should appear in Moneydance. Dashboard connections are not exposed automatically; new accounts are often left off. If the extension lists fewer accounts than Connections, this is why.
 
-The in-app **How to get an API key** button currently opens Lunch Flow’s API destination page. Replace that with a 101-level guide covering: what Lunch Flow is, connecting banks, Account Access, creating the API destination, pasting the key, mapping, and first import. Do not leave the link pointing only at the last step.
+The in-app **Setup guide** opens [docs/user/setup.md](user/setup.md). That hub must stay written for a non-technical reader: we own the overall flow; Lunch Flow’s docs are linked for their screens. Do not send people only to the API destination page.
 3. In Moneydance: install the extension, open **Extensions → Lunch Flow**.
 4. Paste key → **Save key** → **Refresh accounts**. On success, we list accounts. (Refresh is the connection test.)
 5. Map each Lunch Flow account (`name`, `institution_name`, `currency`) to a Moneydance **bank or credit-card** account. Do not map investment/loan yet.

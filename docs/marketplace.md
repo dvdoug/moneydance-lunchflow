@@ -73,7 +73,7 @@ Contact: [hello@lunchflow.app](mailto:hello@lunchflow.app). Public docs: https:/
 ## Shared polish checklist before either submission
 
 - [x] Settings UI for the API key; Refresh accounts is the connection test
-- [ ] In-app help: screenshots-level copy for creating the API destination
+- [x] In-app help: [docs/user](user/README.md) setup guide (Lunch Flow links + our window)
 - [x] Account mapping + From date (rolls forward after success)
 - [x] Idempotent import (FITID skip; second import of the same window adds no extra blue dots)
 - [x] Errors a non-developer can act on (status bar + window + console)

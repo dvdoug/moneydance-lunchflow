@@ -39,8 +39,8 @@ Do these in order. Do not start marketplace outreach until the checkboxes in pha
 - [x] Mappings save on Import and window close (X / Alt+F4 / Close); no Save mappings button
 - [x] After success, roll From to last posted − 31 days
 - [x] `module_desc` leads with UK/EU Open Banking
-- [ ] Help 101-level setup guide (button still opens Lunch Flow destination docs)
-- [ ] README screenshots of the real UI
+- [x] Help 101-level setup guide (`docs/user/`; in-app **Setup guide**)
+- [ ] Screenshots of the real UI (`docs/user/images/` when we add them)
 - [x] Custom icon (Lunch Flow favicon; may not show in current Windows menu/manager)
 - [x] Windows dogfood on throwaway **Lunch Flow testing**; owner may alpha the main file after a backup
 

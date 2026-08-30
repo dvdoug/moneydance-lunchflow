@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 34 - 2026-08-29
+
+### Added
+- In-app **Setup guide** opens our user docs (Lunch Flow setup, Moneydance steps, troubleshooting).
+
 ## 33 - 2026-08-29
 
 ### Changed

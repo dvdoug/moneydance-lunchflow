@@ -4,7 +4,7 @@ Instructions for AI coding agents working in this repository. Humans should star
 
 ## Current state (read this first)
 
-Shipped locally as **`module_build` 33** (`Version.kt`, `meta_info.dict`, and [CHANGELOG.md](CHANGELOG.md) must stay in lockstep). Phase 3 import is done. Phase 4 polish is in progress.
+Shipped locally as **`module_build` 34** (`Version.kt`, `meta_info.dict`, and [CHANGELOG.md](CHANGELOG.md) must stay in lockstep). Phase 3 import is done. Phase 4 polish is in progress.
 
 **Import path (do not regress):** write `OnlineTxn`s onto `account.getDownloadedTxns()`, then `MoneydanceGUI.showDownloadedTxns(account)` (`OnlineManager.processDownloadedTxns`). That is Moneydance’s OFX Confirm / Merge path (`ol.orig-txn`, blue dots). **Do not create `ParentTxn`s.** v19–v21 custom `ParentTxn` factories and “attach missing original” repairs were deleted on purpose.
 
@@ -22,8 +22,7 @@ Shipped locally as **`module_build` 33** (`Version.kt`, `meta_info.dict`, and [C
 
 **Do not do next unless asked**
 
-- Help 101 (button still opens Lunch Flow destination docs).
-- README screenshots of the real UI.
+- README / in-app screenshots of the real UI (add under `docs/user/images/` and update when the window changes).
 - Holdings; do not map investment/loan accounts in production advice.
 - Marketplace outreach (Phase 5).
 
@@ -151,7 +150,7 @@ DevKit / API: https://infinitekind.com/developer and https://infinitekind.com/de
 - Settings: paste API key, **Save key** / **Refresh accounts**, clear 401/403 copy. Refresh is the connection test (no separate Test button).
 - Account mapping: Lunch Flow `name` · `institution_name` → Moneydance account + From date. Persist on Import and window close, not a Save mappings button.
 - **Import** and optional auto-import on `md:file:opened` (per-file checkbox, default **off**). Status bar + Help → Console. Never log the API key. Cancel-in-progress is still missing.
-- Help button must eventually be a 101 setup guide. Stopgap URL is Lunch Flow’s API destination page.
+- Help (**Setup guide**) opens [docs/user/setup.md](docs/user/setup.md) on GitHub. Keep that guide non-technical: we own the overall flow; link Lunch Flow’s pages for their UI instead of duplicating “click here” for their screens. User-facing docs live in `docs/user/` (not the architecture notes). Update them in the same change as UI copy.
 
 ## Verification
 
@@ -165,7 +164,8 @@ There is no headless Moneydance. GitHub Actions (`.github/workflows/ci.yml`) run
 
 | File | Audience |
 | --- | --- |
-| [README.md](README.md) | Humans, marketplace listing draft |
+| [README.md](README.md) | Short human pointer |
+| [docs/user/](docs/user/README.md) | End-user setup, Moneydance steps, troubleshooting |
 | [docs/product.md](docs/product.md) | Why this exists, user flow |
 | [docs/architecture.md](docs/architecture.md) | Technical design |
 | [docs/lunchflow-api.md](docs/lunchflow-api.md) | Personal API contract we code against |

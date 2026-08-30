@@ -2,7 +2,7 @@
 
 ## Before writing code
 
-[README.md](README.md) is for people installing the extension. Keep it free of roadmap phases, agent notes, and “throwaway file” chatter. Developers: read [AGENTS.md](AGENTS.md) (especially **Current state**) and [docs/product.md](docs/product.md). The Gradle project already exists. Next work is Phase 4 polish (Help 101, screenshots, cancel, icon) unless the owner asks otherwise. Do not re-scaffold the DevKit layout. Do not implement [docs/review-v19-txn-types.md](docs/review-v19-txn-types.md).
+[README.md](README.md) is a short pointer. End-user help lives in [docs/user/](docs/user/README.md) (GitHub-rendered markdown). Write those pages for a non-technical reader. Own the overall flow; link [Lunch Flow’s guides](https://www.lunchflow.app/docs/guides/get-started/welcome) for *their* screens instead of duplicating click-paths. Spell out **our** window (button names). If you add screenshots, put them in `docs/user/images/` and refresh them whenever the UI changes. Developers: read [AGENTS.md](AGENTS.md) (especially **Current state**) and [docs/product.md](docs/product.md). The Gradle project already exists. Next work is Phase 4 polish (Help 101, screenshots, cancel, icon) unless the owner asks otherwise. Do not re-scaffold the DevKit layout. Do not implement [docs/review-v19-txn-types.md](docs/review-v19-txn-types.md).
 
 ## Conventions
 

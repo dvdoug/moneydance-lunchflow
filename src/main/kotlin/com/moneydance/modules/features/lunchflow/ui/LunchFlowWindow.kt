@@ -106,7 +106,7 @@ class LunchFlowWindow(
         gbc.insets = Insets(0, 0, 4, 0)
         header.add(JLabel("Import bank transactions via Open Banking (UK, EU, and more)."), gbc)
 
-        val help = JButton("How to get an API key")
+        val help = JButton("Setup guide")
         help.isBorderPainted = false
         help.isContentAreaFilled = false
         help.isOpaque = false
@@ -345,7 +345,7 @@ class LunchFlowWindow(
     }
 
     companion object {
-        // TODO: replace with our 101 setup guide (what Lunch Flow is, banks, Account Access, key, map, import).
-        const val DOCS_URL: String = "https://www.lunchflow.app/docs/guides/destinations/api"
+        const val DOCS_URL: String =
+            "https://github.com/dvdoug/moneydance-lunchflow/blob/master/docs/user/setup.md"
     }
 }
