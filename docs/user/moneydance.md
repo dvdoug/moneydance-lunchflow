@@ -37,7 +37,7 @@ Mappings are saved when you **Import** or when you close the window (the X, Alt+
 
 Click **Import**.
 
-New rows appear in the Moneydance register as **unconfirmed downloads** (a solid blue dot). That is the same Confirm / Merge process as an OFX download:
+New rows appear in the Moneydance register as **unconfirmed downloads** (a solid blue dot). That is the same Confirm / Merge process as when you import a file you downloaded from your bank:
 
 - **Confirm** keeps the new row.
 - **Merge** combines it with a matching row you already typed.
