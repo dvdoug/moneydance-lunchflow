@@ -41,7 +41,7 @@ Use a **throwaway** Moneydance data file and a Lunch Flow API destination you ca
 
 If you change behaviour, IDs, or commands, update `AGENTS.md` and the matching file under `docs/` in the same change. Keep `CLAUDE.md`, `GEMINI.md`, and `.github/copilot-instructions.md` as pointers, not a second copy of the rules.
 
-Every shipped `module_build` bump must add 1–2 high-level lines to [CHANGELOG.md](CHANGELOG.md) (Keep a Changelog). Commit each iteration, including docs-only work; do not leave the tree uncommitted.
+Every shipped `module_build` bump must add 1–2 high-level lines to [CHANGELOG.md](CHANGELOG.md) (Keep a Changelog). Commit **and push** each iteration, including docs-only work; do not leave the tree uncommitted or only local.
 
 ## GitHub Actions CI
 

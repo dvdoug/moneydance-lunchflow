@@ -72,7 +72,7 @@ Do not rename the extension ID after the first public build. Infinite Kind treat
 - **Do not commit** Moneydance signing keys, `privkey*`, Gradle local properties with passphrases, `*.mxt` built locally with a personal key, or real user data files.
 - Keep this file true. If you change architecture, IDs, or commands, update `AGENTS.md` and the matching doc in `docs/` in the same change.
 - **Changelog.** Maintain [CHANGELOG.md](CHANGELOG.md) in [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) form. Every `module_build` bump gets a **1–2 line high-level** entry (Added/Changed/Fixed/Removed/Security). No git-log dumps. Put in-progress notes under `## [Unreleased]` until the bump.
-- **Commit every iteration**, even when `module_build` does not change (docs, polish, tests). Do not leave a day’s work only in the working tree. Never commit keys, `userconfig/`, `lib/*.jar`, or `*.mxt`.
+- **Commit and push every iteration**, even when `module_build` does not change (docs, polish, tests). Do not leave a day’s work only in the working tree. `git push origin` the current branch after each commit (this repo: `master`). Never commit keys, `userconfig/`, `lib/*.jar`, or `*.mxt`.
 
 ## Non-goals (unless the user asks)
 
