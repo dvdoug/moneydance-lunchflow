@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 39 - 2026-08-29
+
+### Fixed
+- An empty API key field no longer deletes the saved key (only Remove key does). Enter no longer triggers Save key.
+
 ## 38 - 2026-08-29
 
 ### Fixed

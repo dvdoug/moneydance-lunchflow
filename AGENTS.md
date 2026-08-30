@@ -4,13 +4,13 @@ Instructions for AI coding agents working in this repository. Humans should star
 
 ## Current state (read this first)
 
-Shipped locally as **`module_build` 38** (`Version.kt`, `meta_info.dict`, and [CHANGELOG.md](CHANGELOG.md) must stay in lockstep). Phase 3 import is done. Phase 4 polish is in progress.
+Shipped locally as **`module_build` 39** (`Version.kt`, `meta_info.dict`, and [CHANGELOG.md](CHANGELOG.md) must stay in lockstep). Phase 3 import is done. Phase 4 polish is in progress.
 
 **Import path (do not regress):** write `OnlineTxn`s onto `account.getDownloadedTxns()`, then `MoneydanceGUI.showDownloadedTxns(account)` (`OnlineManager.processDownloadedTxns`). That is Moneydance’s OFX Confirm / Merge path (`ol.orig-txn`, blue dots). **Do not create `ParentTxn`s.** v19–v21 custom `ParentTxn` factories and “attach missing original” repairs were deleted on purpose.
 
 **What works now**
 
-- Settings: paste API key, Save key, Remove key. Persist `lunchflow.apiKey` with **both** `LocalStorage.put` (survives restart) and `cacheAuthentication`. Never delete the put-copy after a cache write. Never log the key.
+- Settings: paste API key, Save key, Remove key. Persist `lunchflow.apiKey` with **both** `LocalStorage.put` (read this first) and `cacheAuthentication`. Empty `setApiKey` is a no-op; only `clearApiKey` / Remove key deletes. Never log the key.
 - Mapping table: Lunch Flow account → Moneydance account + **From** date. Saved as `lunchflow.mappings`. **No Save mappings button.** Persist on **Import**, and on Close / title-bar X / Alt+F4 / Escape (`goneAway`), but only if accounts loaded this session (do not wipe mappings if the table never populated).
 - **Import** and **import when this file opens** (checkbox, default **off** until `lunchflow.importOnOpen=true`) share `SyncService`. HTTP off EDT; `showDownloadedTxns` + pending reconcile on EDT.
 - Progress: `MoneydanceGUI.setStatus("Lunch Flow: …", progress)` and Help → Console (`lunchflow:` via `System.err` + `AppDebug.ALL`). Never log the key.

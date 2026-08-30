@@ -82,6 +82,7 @@ class LunchFlowWindow(
         }
 
         setBusyButtons(true)
+        rootPane.defaultButton = syncButton
         if (settings == null || book == null) {
             setStatus("Open a data file to continue.")
         }
@@ -199,6 +200,10 @@ class LunchFlowWindow(
         }
         val typed = typedKey()
         if (typed.isEmpty()) {
+            if (store.apiKey() != null) {
+                setStatus("Using the key already saved.")
+                return true
+            }
             setStatus("Paste an API key first.")
             return false
         }

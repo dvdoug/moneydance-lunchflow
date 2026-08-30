@@ -12,16 +12,13 @@ class SettingsStore(
     private val removePlain: (String) -> Unit = { }
 ) {
     fun apiKey(): String? {
-        getAuth(API_KEY)?.trim()?.takeIf { it.isNotEmpty() }?.let { return it }
-        return getPlain(API_KEY)?.trim()?.takeIf { it.isNotEmpty() }
+        getPlain(API_KEY)?.trim()?.takeIf { it.isNotEmpty() }?.let { return it }
+        return getAuth(API_KEY)?.trim()?.takeIf { it.isNotEmpty() }
     }
 
     fun setApiKey(value: String) {
         val trimmed = value.trim()
-        if (trimmed.isEmpty()) {
-            clearApiKey()
-            return
-        }
+        if (trimmed.isEmpty()) return
         setAuth(API_KEY, trimmed)
         setPlain(API_KEY, trimmed)
     }

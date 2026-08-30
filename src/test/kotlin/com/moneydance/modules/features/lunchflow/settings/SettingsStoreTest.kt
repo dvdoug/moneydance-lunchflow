@@ -40,7 +40,7 @@ class SettingsStoreTest {
     }
 
     @Test
-    fun emptySetClears() {
+    fun emptySetDoesNotClear() {
         val auth = mutableMapOf(SettingsStore.API_KEY to "keep")
         val plain = mutableMapOf(SettingsStore.API_KEY to "keep")
         val store = SettingsStore(
@@ -52,7 +52,7 @@ class SettingsStoreTest {
             removePlain = { plain.remove(it) }
         )
         store.setApiKey("   ")
-        assertNull(store.apiKey())
+        assertEquals("keep", store.apiKey())
     }
 
     @Test
