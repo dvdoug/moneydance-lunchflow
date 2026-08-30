@@ -14,10 +14,11 @@ import java.awt.Component
 import javax.swing.AbstractCellEditor
 import javax.swing.DefaultCellEditor
 import javax.swing.JComboBox
-import javax.swing.JLabel
+import javax.swing.BorderFactory
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JTable
+import javax.swing.JTextArea
 import javax.swing.ListSelectionModel
 import javax.swing.table.AbstractTableModel
 import javax.swing.table.DefaultTableCellRenderer
@@ -49,7 +50,16 @@ class AccountMappingPanel(
         table.columnModel.getColumn(2).preferredWidth = 130
         add(JScrollPane(table), BorderLayout.CENTER)
         add(
-            JLabel("From uses your Moneydance date format (click for a calendar). Clear it for all history Lunch Flow has. Missing a bank? Enable it under Destinations → Account Access, then Refresh accounts."),
+            JTextArea().apply {
+                text = "From uses your Moneydance date format (click for a calendar). Clear it for all history Lunch Flow has.\n" +
+                    "Missing a bank? Enable it in Lunch Flow under Destinations → Account Access, then Refresh accounts."
+                isEditable = false
+                lineWrap = true
+                wrapStyleWord = true
+                background = null
+                isOpaque = false
+                border = BorderFactory.createEmptyBorder()
+            },
             BorderLayout.SOUTH
         )
     }

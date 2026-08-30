@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 38 - 2026-08-29
+
+### Fixed
+- Mapping-table hint under From wraps instead of being cut off.
+
 ## 37 - 2026-08-29
 
 ### Changed
