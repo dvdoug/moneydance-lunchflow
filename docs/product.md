@@ -18,7 +18,7 @@ Ship an unofficial Moneydance extension, authored by **Doug Wright**, that is **
 - User pastes their Lunch Flow **Personal API** key in Settings (never hardcoded).
 - User maps Lunch Flow accounts to Moneydance accounts.
 - User imports (manually, and optionally when the data file opens).
-- **Posted** transactions import once (FITID) via Moneydance’s download converter. **Pending** authorisations appear as `[PENDING]` unconfirmed rows. If a dropped pending uniquely matches a new posted row on date, merchant, and exact amount, **update that unconfirmed row in place**. Otherwise delete the unconfirmed pending and add a new posted **download** (not a hand-built `ParentTxn`).
+- **Posted** transactions import once (FITID) via Moneydance’s download converter. **Pending** authorisations appear as `[PENDING]` unconfirmed rows (Description only; merchant matching still runs). If a dropped pending uniquely matches a new posted row on date, merchant, and exact amount, **update that unconfirmed row in place**. Otherwise delete the unconfirmed pending and add a new posted **download** (not a hand-built `ParentTxn`).
 - Quality is high enough to list in **both** the Moneydance extension directory and Lunch Flow’s destination list.
 
 ## What “functionally equivalent to Moneydance+” means here

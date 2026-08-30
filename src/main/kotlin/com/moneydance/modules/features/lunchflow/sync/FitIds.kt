@@ -10,6 +10,8 @@ object FitIds {
     const val PREFIX_POSTED: String = "lunchflow:"
     const val PREFIX_PENDING: String = "lunchflow:pending:"
     const val PENDING_LABEL: String = "[PENDING] "
+    /** Moneydance similar-payee tag. Must not include [PENDING] — the matcher is prefix-based. */
+    const val ORIG_PAYEE_TAG: String = "ol.orig-payee"
 
     fun posted(accountId: Long, txnId: String): String = "$PREFIX_POSTED$accountId:$txnId"
 
@@ -31,6 +33,10 @@ object FitIds {
         val v = fitId ?: return false
         return v.startsWith(PREFIX_PENDING)
     }
+
+    fun stripPendingLabel(text: String): String = text.removePrefix(PENDING_LABEL)
+
+    fun withPendingLabel(text: String): String = PENDING_LABEL + stripPendingLabel(text)
 
     fun synthHash(txn: LunchFlowTransaction): String {
         val raw = listOf(

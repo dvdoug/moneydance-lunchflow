@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 40 - 2026-08-30
+
+### Fixed
+- `[PENDING]` is only on the visible Description. The download name / `ol.orig-payee` stays the merchant so similar-payee category matching still works on holds. Existing Lunch Flow rows with a poisoned orig-payee are repaired on the next import.
+
 ## 39 - 2026-08-29
 
 ### Fixed

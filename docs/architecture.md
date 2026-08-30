@@ -93,7 +93,7 @@ If the user confirms a pending hold, we leave that register txn alone. The later
 
 Per mapping, **sync start date** (`YYYY-MM-DD`). Default: first day of the current month. Blank = all history Lunch Flow will return **for this run**. After a successful import, set `syncStartDate = max(current start, lastPostedDate − 31 days)` so we only move From **forward** (never earlier than the user chose). A first sync from last week stays last week; a January backfill walks up to last posted − 31. Typing an older From and clicking Import still backfills; then the date walks forward again. Pending is always the current set (`include_pending=true`).
 
-Unconfirmed pending downloaded rows use a `[PENDING] ` name prefix so they are visible in the register. Hidden FITID / `lunchflow.pending` remain the source of truth. The prefix is stripped on promote to posted.
+Unconfirmed pending rows get a `[PENDING] ` **Description** prefix after `showDownloadedTxns`, so they stay visible in the register. `OnlineTxn.setName` and `ol.orig-payee` stay the raw merchant — Moneydance’s similar-payee matcher is prefix/suffix on that tag, and `[PENDING] ` at the front zeros the prefix score. Hidden FITID / `lunchflow.pending` remain the source of truth. Description prefix is stripped on promote to posted; a leftover `[PENDING] ` on `ol.orig-payee` is stripped on our FITIDs at import.
 
 Currency: if Lunch Flow `currency` is set and differs from the Moneydance account’s `CurrencyType.idString`, skip that mapping (hard error).
 

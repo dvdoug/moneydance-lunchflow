@@ -16,4 +16,13 @@ class FitIdsTest {
         assertTrue(key.startsWith("lunchflow:pending:7:synth:"))
         assertEquals(key, FitIds.pendingKey(7, pending))
     }
+
+    @Test
+    fun pendingLabelIsDisplayOnly() {
+        assertEquals("TFL TRAVEL CHARGE", FitIds.stripPendingLabel("TFL TRAVEL CHARGE"))
+        assertEquals("TFL TRAVEL CHARGE", FitIds.stripPendingLabel("[PENDING] TFL TRAVEL CHARGE"))
+        assertEquals("[PENDING] TFL TRAVEL CHARGE", FitIds.withPendingLabel("TFL TRAVEL CHARGE"))
+        assertEquals("[PENDING] TFL TRAVEL CHARGE", FitIds.withPendingLabel("[PENDING] TFL TRAVEL CHARGE"))
+        assertEquals("ol.orig-payee", FitIds.ORIG_PAYEE_TAG)
+    }
 }
