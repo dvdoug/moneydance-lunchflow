@@ -11,7 +11,9 @@ data class AccountMapping(
     val lunchFlowAccountId: Long,
     val moneydanceAccountUuid: String,
     val syncStartDate: String? = defaultStartDate(),
-    val lastPostedDate: String? = null
+    val lastPostedDate: String? = null,
+    val lunchFlowName: String? = null,
+    val institutionName: String? = null
 ) {
     fun afterSuccessfulImport(latestPosted: String?): AccountMapping {
         val latest = latestPosted?.takeIf { it.isNotBlank() } ?: lastPostedDate
@@ -24,6 +26,14 @@ data class AccountMapping(
         return copy(
             lastPostedDate = latest,
             syncStartDate = nextStart
+        )
+    }
+
+    fun withLunchFlow(account: com.moneydance.modules.features.lunchflow.api.LunchFlowAccount?): AccountMapping {
+        if (account == null) return this
+        return copy(
+            lunchFlowName = account.name,
+            institutionName = account.institutionName.takeIf { it.isNotBlank() }
         )
     }
 
@@ -63,6 +73,12 @@ object AccountMappingCodec {
                 if (!m.lastPostedDate.isNullOrBlank()) {
                     append(",\"last\":").append(jsonString(m.lastPostedDate))
                 }
+                if (!m.lunchFlowName.isNullOrBlank()) {
+                    append(",\"name\":").append(jsonString(m.lunchFlowName))
+                }
+                if (!m.institutionName.isNullOrBlank()) {
+                    append(",\"inst\":").append(jsonString(m.institutionName))
+                }
                 append("}")
             }
         }
@@ -80,7 +96,9 @@ object AccountMappingCodec {
                 lunchFlowAccountId = lf,
                 moneydanceAccountUuid = md,
                 syncStartDate = o.jsonStr("from")?.takeIf { it.isNotBlank() },
-                lastPostedDate = o.jsonStr("last")?.takeIf { it.isNotBlank() }
+                lastPostedDate = o.jsonStr("last")?.takeIf { it.isNotBlank() },
+                lunchFlowName = o.jsonStr("name")?.takeIf { it.isNotBlank() },
+                institutionName = o.jsonStr("inst")?.takeIf { it.isNotBlank() }
             )
         }
     }

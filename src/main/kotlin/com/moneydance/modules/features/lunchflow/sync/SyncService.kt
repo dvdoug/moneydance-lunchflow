@@ -117,7 +117,7 @@ object SyncService {
         bundle.fetched.forEachIndexed { index, item ->
             if (item.error != null || item.lf == null || item.txns == null) {
                 val line = item.error ?: "Error"
-                updated.add(item.mapping)
+                updated.add(item.mapping.withLunchFlow(item.lf))
                 results.add(AccountSyncResult(error = line))
                 lines.add(if (item.lf != null) "${item.lf.name}: $line" else line)
                 MdNotify.log("$reason ${item.lf?.name ?: item.mapping.lunchFlowAccountId}: $line")
@@ -125,11 +125,12 @@ object SyncService {
             }
             MdNotify.bar(gui, "importing ${item.lf.name}", 0.55 + 0.4 * (index + 1) / total)
             val result = engine.apply(item.mapping, item.lf, item.txns)
+            val named = item.mapping.withLunchFlow(item.lf)
             updated.add(
                 if (result.error == null) {
-                    item.mapping.afterSuccessfulImport(result.lastPostedDate)
+                    named.afterSuccessfulImport(result.lastPostedDate)
                 } else {
-                    item.mapping
+                    named
                 }
             )
             results.add(result)

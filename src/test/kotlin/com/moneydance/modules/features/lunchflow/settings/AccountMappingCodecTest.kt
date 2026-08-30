@@ -22,6 +22,16 @@ class AccountMappingCodecTest {
     }
 
     @Test
+    fun roundTripNames() {
+        val original = listOf(
+            AccountMapping(42, "uuid-1", "2026-03-01", null, "Current", "Lloyds")
+        )
+        val parsed = AccountMappingCodec.fromJson(AccountMappingCodec.toJson(original)).single()
+        assertEquals("Current", parsed.lunchFlowName)
+        assertEquals("Lloyds", parsed.institutionName)
+    }
+
+    @Test
     fun emptyJson() {
         assertEquals(emptyList(), AccountMappingCodec.fromJson(null))
         assertEquals(emptyList(), AccountMappingCodec.fromJson(""))

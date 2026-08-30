@@ -85,7 +85,9 @@ class AccountMappingPanel(
                     lunchFlowAccountId = row.lf.id,
                     moneydanceAccountUuid = uuid,
                     syncStartDate = row.startDate?.trim()?.ifBlank { null },
-                    lastPostedDate = saved.firstOrNull { it.lunchFlowAccountId == row.lf.id }?.lastPostedDate
+                    lastPostedDate = saved.firstOrNull { it.lunchFlowAccountId == row.lf.id }?.lastPostedDate,
+                    lunchFlowName = row.lf.name,
+                    institutionName = row.lf.institutionName.takeIf { it.isNotBlank() }
                 )
             }
         }

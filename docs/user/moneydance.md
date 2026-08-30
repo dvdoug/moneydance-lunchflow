@@ -19,7 +19,7 @@ Requires Moneydance 2024 or newer. Installing a newer file with the same id repl
 3. Click **Save key**.
 4. Click **Refresh accounts**.
 
-You should see one row per Lunch Flow account that Account Access allows. If the list is too short, go back to [Account Access](setup.md#3-turn-on-account-access-for-each-account).
+You should see one row per Lunch Flow account that Account Access allows. Saved mappings appear as soon as the window opens; **Refresh accounts** updates names from Lunch Flow. If the list is too short after a refresh, go back to [Account Access](setup.md#3-turn-on-account-access-for-each-account).
 
 **Remove key** forgets the key stored in this data file.
 

@@ -112,7 +112,6 @@ class Main : FeatureModule() {
             return
         }
         val maps = store.mappings()
-        val win = window?.takeIf { it.isDisplayable }
         SyncService.start(
             book = book,
             settings = store,
@@ -120,12 +119,14 @@ class Main : FeatureModule() {
             mappings = maps,
             key = key,
             reason = "auto-import",
-            onStatus = { text -> win?.showStatus(text) },
-            onBusy = { running -> win?.setImportBusy(running) },
-            onAccounts = { accounts -> win?.showAccounts(accounts) },
-            onMappings = { updated -> win?.showSavedMappings(updated) }
+            onStatus = { text -> liveWindow()?.showStatus(text) },
+            onBusy = { running -> liveWindow()?.setImportBusy(running) },
+            onAccounts = { accounts -> liveWindow()?.showAccounts(accounts) },
+            onMappings = { updated -> liveWindow()?.showSavedMappings(updated) }
         )
     }
+
+    private fun liveWindow(): LunchFlowWindow? = window?.takeIf { it.isDisplayable }
 
     private fun closeWindow() {
         val current = window

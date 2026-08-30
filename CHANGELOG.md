@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 36 - 2026-08-29
+
+### Fixed
+- Mapping table shows saved accounts when the window opens, even if Import-on-open is still running.
+
 ## 35 - 2026-08-29
 
 ### Fixed

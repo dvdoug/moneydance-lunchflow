@@ -64,6 +64,7 @@ class LunchFlowWindow(
 
         mappingPanel.setSavedMappings(settings?.mappings().orEmpty())
         mappingPanel.border = BorderFactory.createEmptyBorder(0, 20, 8, 20)
+        showSavedAccountRows()
 
         add(buildHeader(), BorderLayout.NORTH)
         add(mappingPanel, BorderLayout.CENTER)
@@ -226,7 +227,11 @@ class LunchFlowWindow(
     }
 
     private fun refreshAccounts() {
-        if (busy || SyncService.inFlight) return
+        if (busy) return
+        if (SyncService.inFlight) {
+            setStatus("Import is running. The list will update when it finishes.")
+            return
+        }
         val key = keyForRequest()
         if (key.isNullOrEmpty()) {
             setStatus("Paste an API key first.")
@@ -315,8 +320,32 @@ class LunchFlowWindow(
 
     fun showAccounts(accounts: List<LunchFlowAccount>) {
         lfAccounts = accounts
-        mappingPanel.setSavedMappings(settings?.mappings().orEmpty())
+        val saved = settings?.mappings().orEmpty()
+        val named = saved.map { mapping ->
+            val lf = accounts.firstOrNull { it.id == mapping.lunchFlowAccountId } ?: return@map mapping
+            mapping.withLunchFlow(lf)
+        }
+        if (named != saved) settings?.setMappings(named)
+        mappingPanel.setSavedMappings(named)
         mappingPanel.setLunchFlowAccounts(accounts)
+    }
+
+    private fun showSavedAccountRows() {
+        val maps = settings?.mappings().orEmpty()
+        if (maps.isEmpty()) return
+        showAccounts(
+            maps.map { mapping ->
+                LunchFlowAccount(
+                    id = mapping.lunchFlowAccountId,
+                    connectionId = null,
+                    name = mapping.lunchFlowName?.ifBlank { null } ?: "Account ${mapping.lunchFlowAccountId}",
+                    institutionName = mapping.institutionName.orEmpty(),
+                    provider = null,
+                    currency = null,
+                    status = "ACTIVE"
+                )
+            }
+        )
     }
 
     private fun refreshSavedLabel() {
