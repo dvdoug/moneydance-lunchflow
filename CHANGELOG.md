@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 35 - 2026-08-29
+
+### Fixed
+- Keep the API key in the data file (not only Moneydance’s auth cache, which can be empty after a restart).
+
 ## 34 - 2026-08-29
 
 ### Added

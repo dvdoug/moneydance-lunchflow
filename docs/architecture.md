@@ -62,7 +62,7 @@ Per **data file**, not per machine:
 
 Cleared status follows Moneydance **Mark Transactions as Cleared When Confirmed**, not our import code.
 
-Store non-secrets in `AccountBook` local storage under `lunchflow.*` (`lunchflow.mappings`, `lunchflow.importOnOpen`). Store the API key with `LocalStorage.cacheAuthentication` only. Never `LocalStorage.put` the key, never a sidecar file, never logs. UI: password field, Save key, Remove key, Refresh accounts. Mappings persist on Import and on window close (X / Alt+F4 / Escape / Close), not a dedicated Save mappings button.
+Store non-secrets in `AccountBook` local storage under `lunchflow.*` (`lunchflow.mappings`, `lunchflow.importOnOpen`). Store the API key in the same encrypted data file via `LocalStorage.put("lunchflow.apiKey")` and `cacheAuthentication`. Do not delete the put-copy after a cache write (the auth cache has been empty after restart). Never a sidecar file or logs. UI: password field, Save key, Remove key, Refresh accounts. Mappings persist on Import and on window close (X / Alt+F4 / Escape / Close), not a dedicated Save mappings button.
 
 ## Decision: import through downloaded transactions
 

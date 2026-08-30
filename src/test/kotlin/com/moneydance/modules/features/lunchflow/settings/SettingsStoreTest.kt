@@ -21,7 +21,7 @@ class SettingsStoreTest {
         store.setApiKey("  abc  ")
         assertEquals("abc", store.apiKey())
         assertEquals("abc", auth[SettingsStore.API_KEY])
-        assertNull(plain[SettingsStore.API_KEY])
+        assertEquals("abc", plain[SettingsStore.API_KEY])
         store.clearApiKey()
         assertNull(store.apiKey())
         assertNull(auth[SettingsStore.API_KEY])
@@ -29,20 +29,14 @@ class SettingsStoreTest {
     }
 
     @Test
-    fun migratesLegacyPlaintextKey() {
-        val auth = mutableMapOf<String, String>()
-        val plain = mutableMapOf(SettingsStore.API_KEY to "from-file")
+    fun readsPlainWhenAuthCacheEmpty() {
         val store = SettingsStore(
-            getAuth = { auth[it] },
-            setAuth = { k, v -> auth[k] = v },
-            clearAuth = { auth.remove(it) },
-            getPlain = { plain[it] },
-            setPlain = { k, v -> plain[k] = v },
-            removePlain = { plain.remove(it) }
+            getAuth = { null },
+            setAuth = { _, _ -> },
+            clearAuth = { },
+            getPlain = { if (it == SettingsStore.API_KEY) "from-file" else null }
         )
         assertEquals("from-file", store.apiKey())
-        assertEquals("from-file", auth[SettingsStore.API_KEY])
-        assertNull(plain[SettingsStore.API_KEY])
     }
 
     @Test

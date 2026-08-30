@@ -13,10 +13,7 @@ class SettingsStore(
 ) {
     fun apiKey(): String? {
         getAuth(API_KEY)?.trim()?.takeIf { it.isNotEmpty() }?.let { return it }
-        val legacy = getPlain(API_KEY)?.trim()?.takeIf { it.isNotEmpty() } ?: return null
-        setAuth(API_KEY, legacy)
-        removePlain(API_KEY)
-        return legacy
+        return getPlain(API_KEY)?.trim()?.takeIf { it.isNotEmpty() }
     }
 
     fun setApiKey(value: String) {
@@ -26,7 +23,7 @@ class SettingsStore(
             return
         }
         setAuth(API_KEY, trimmed)
-        removePlain(API_KEY)
+        setPlain(API_KEY, trimmed)
     }
 
     fun clearApiKey() {
