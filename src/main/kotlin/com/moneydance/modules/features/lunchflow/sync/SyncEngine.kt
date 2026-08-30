@@ -128,10 +128,6 @@ class SyncEngine(
 
         for ((key, existing) in ourPending) {
             if (key in promotedPendingKeys) continue
-            if (!MdAccess.isNew(existing)) {
-                stripPendingDescription(existing)
-                continue
-            }
             MdAccess.deleteTxn(existing)
             pendingRemoved++
         }
@@ -221,12 +217,6 @@ class SyncEngine(
         }
         txn.setParameter(FitIds.PARAM_PENDING, true)
         txn.syncItem()
-    }
-
-    private fun stripPendingDescription(txn: ParentTxn) {
-        val current = MdAccess.getDescription(txn).orEmpty()
-        if (!current.startsWith(FitIds.PENDING_LABEL)) return
-        MdAccess.setDescription(txn, FitIds.stripPendingLabel(current))
     }
 
     private fun sanitizeOrigPayee(txn: ParentTxn) {

@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 42 - 2026-08-30
+
+### Changed
+- A Lunch Flow hold we imported is still ours after you Confirm the blue dot. If it leaves pending without a unique posted match (auth £100, capture £95), we delete that register row and import the settled amount. Reminder or typed rows are still never deleted.
+
 ## 41 - 2026-08-30
 
 ### Changed
