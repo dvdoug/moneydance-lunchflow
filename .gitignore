@@ -59,6 +59,11 @@ AGENTS.override.md
 CLAUDE.local.md
 .claude/settings.local.json
 
+# Local planning only — never commit (roadmap, design reviews, scratch)
+docs/roadmap.md
+docs/review-*.md
+docs/_local/
+
 # Kotlin / Java
 *.jar
 !gradle/wrapper/gradle-wrapper.jar

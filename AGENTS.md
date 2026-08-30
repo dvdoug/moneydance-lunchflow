@@ -18,8 +18,6 @@ Shipped locally as **`module_build` 36** (`Version.kt`, `meta_info.dict`, and [C
 - Posted FITID `lunchflow:{accountId}:{txnId}`; pending `lunchflow:pending:…`. Skip only live register `ParentTxn` FITIDs. Pending set-reconcile **unconfirmed** (`isNew`) pending parents on the mapped account only; never `deleteItem` confirmed rows.
 - `module_desc`: Open Banking / UK and EU first; Lunch Flow as the pipe; unaffiliated disclaimer. Do not mention Moneydance+ or Plaid in listing copy.
 
-**Do not implement** [docs/review-v19-txn-types.md](docs/review-v19-txn-types.md). It is a historical review of a withdrawn `ParentTxn` factory. The banner is the only true part.
-
 **Do not do next unless asked**
 
 - README / in-app screenshots of the real UI (add under `docs/user/images/` and update when the window changes).
@@ -72,6 +70,7 @@ Do not rename the extension ID after the first public build. Infinite Kind treat
 - Keep this file true. If you change architecture, IDs, or commands, update `AGENTS.md` and the matching doc in `docs/` in the same change.
 - **Changelog.** Maintain [CHANGELOG.md](CHANGELOG.md) using Keep a Changelog *categories* (Added/Changed/Fixed/Removed/Security). Headings are `## Unreleased` and `## 31 - YYYY-MM-DD` (integer `module_build`, **no square brackets** — those are for SemVer link refs). Every bump gets a **1–2 line high-level** entry. GitHub Release notes copy the section **body** only (the Release title is already `Lunch Flow vN`).
 - **Commit and push every iteration**, even when `module_build` does not change (docs, polish, tests). Do not leave a day’s work only in the working tree. `git push origin` the current branch after each commit (this repo: `master`). Never commit keys, `userconfig/`, `lib/*.jar`, or `*.mxt`.
+- **Do not commit planning scratch.** `docs/roadmap.md`, `docs/review-*.md`, and `docs/_local/` are gitignored. Keep them on disk if useful; never `git add -f` them. Durable next-steps live in **Current state** above, not in a committed roadmap.
 - **Build the `.mxt` locally** on every iteration that the owner will install (`gradlew test lunchflow` → `dist/lunchflow.mxt`, signed with the gitignored key). CI’s unsigned GitHub Release is extra, not a replacement. Do not skip the local package because Actions ran.
 
 ## Non-goals (unless the user asks)
@@ -170,7 +169,6 @@ There is no headless Moneydance. GitHub Actions (`.github/workflows/ci.yml`) run
 | [docs/architecture.md](docs/architecture.md) | Technical design |
 | [docs/lunchflow-api.md](docs/lunchflow-api.md) | Personal API contract we code against |
 | [docs/marketplace.md](docs/marketplace.md) | Infinite Kind + Lunch Flow submission |
-| [docs/roadmap.md](docs/roadmap.md) | Build order |
 | [CHANGELOG.md](CHANGELOG.md) | Notable changes per `module_build` |
 | [SECURITY.md](SECURITY.md) | Secrets handling |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to work in the repo |
