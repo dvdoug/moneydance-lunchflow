@@ -77,7 +77,7 @@ Contact: [hello@lunchflow.app](mailto:hello@lunchflow.app). Public docs: https:/
 - [x] Account mapping + From date (rolls forward after success)
 - [x] Idempotent import (FITID skip; second import of the same window adds no extra blue dots)
 - [x] Errors a non-developer can act on (status bar + window + console)
-- [ ] Extension icon
+- [x] Extension icon (Lunch Flow site mark)
 - [x] Marketplace blurb (`module_desc`) / LICENSE
 - [x] No secrets in the repo, the MXT, or logs
 - [ ] Tested on current Moneydance Windows (in progress) and at least one of macOS/Linux before Infinite Kind review

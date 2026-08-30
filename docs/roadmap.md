@@ -34,14 +34,14 @@ Do these in order. Do not start marketplace outreach until the checkboxes in pha
 ## Phase 4 — Marketplace polish
 
 - [x] Import progress on the Moneydance status bar + Help → Console (`lunchflow:` lines); per-account summary in the window
-- [ ] Cancel in-progress import
+- [x] Cancel in-progress import — not needed (import is near-instant)
 - [x] Optional auto-import on `md:file:opened` (per-file checkbox, default off)
 - [x] Mappings save on Import and window close (X / Alt+F4 / Close); no Save mappings button
 - [x] After success, roll From to last posted − 31 days
 - [x] `module_desc` leads with UK/EU Open Banking
 - [ ] Help 101-level setup guide (button still opens Lunch Flow destination docs)
 - [ ] README screenshots of the real UI
-- [ ] Custom icon
+- [x] Custom icon (Lunch Flow favicon; may not show in current Windows menu/manager)
 - [x] Windows dogfood on throwaway **Lunch Flow testing**; owner may alpha the main file after a backup
 
 ## Phase 5 — Submit

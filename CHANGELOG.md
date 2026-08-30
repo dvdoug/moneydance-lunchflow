@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 33 - 2026-08-29
+
+### Changed
+- Extension icon is Lunch Flow’s site mark (gold F) instead of the DevKit smiley.
+
 ## 32 - 2026-08-29
 
 ### Changed

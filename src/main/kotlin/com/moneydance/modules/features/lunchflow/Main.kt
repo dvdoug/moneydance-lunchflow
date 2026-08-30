@@ -8,6 +8,8 @@ import com.moneydance.modules.features.lunchflow.settings.SettingsStore
 import com.moneydance.modules.features.lunchflow.sync.SyncService
 import com.moneydance.modules.features.lunchflow.ui.LunchFlowWindow
 import com.moneydance.modules.features.lunchflow.ui.MdNotify
+import java.awt.Image
+import javax.imageio.ImageIO
 import javax.swing.SwingUtilities
 import javax.swing.Timer
 
@@ -19,7 +21,7 @@ class Main : FeatureModule() {
     override fun init() {
         val ctx = getContext() ?: return
         try {
-            ctx.registerFeature(this, SHOW, null, name)
+            ctx.registerFeature(this, SHOW, iconImage, name)
         } catch (e: Exception) {
             MdNotify.log("failed to register feature: ${e.message}", e)
         }
@@ -27,6 +29,11 @@ class Main : FeatureModule() {
     }
 
     override fun getName(): String = DISPLAY_NAME
+
+    override fun getIconImage(): Image? {
+        val stream = javaClass.getResourceAsStream("icon.png") ?: return super.getIconImage()
+        return stream.use { ImageIO.read(it) }
+    }
 
     override fun invoke(uri: String) {
         val command = uri.substringBefore(':').substringBefore('?')
