@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 43 - 2026-08-30
+
+### Changed
+- Import lookback is last posted minus 7 days (clearing lag), or the oldest open hold if that is earlier. Dropped the blanket 31-day window.
+
 ## 42 - 2026-08-30
 
 ### Changed

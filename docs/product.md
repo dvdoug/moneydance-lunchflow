@@ -50,9 +50,9 @@ The in-app **Setup guide** opens [docs/user/setup.md](user/setup.md). That hub m
 3. In Moneydance: install the extension, open **Extensions → Lunch Flow**.
 4. Paste key → **Save key** → **Refresh accounts**. On success, we list accounts. (Refresh is the connection test.)
 5. Map each Lunch Flow account (`name`, `institution_name`, `currency`) to a Moneydance **bank or credit-card** account. Do not map investment/loan yet.
-6. Choose a **From** date (default: first of the current month; blank = all history Lunch Flow has). After a successful import, From becomes `max(current From, last posted − 31 days)` — it never moves earlier than you set. Type an older date to backfill again.
+6. Choose a **From** date (default: first of the current month; blank = all history Lunch Flow has). After a successful import, From becomes `max(current From, last posted − 7 days)` — it never moves earlier than you set. Type an older date to backfill again.
 7. **Import**. Mappings also save when the window closes. New rows appear as **unconfirmed downloaded transactions** (solid blue dot). Confirm or merge them in the register the same way as OFX. Pending holds are `[PENDING]` until they post or vanish.
-8. Later imports (including auto on open) fetch that 31-day overlap window and **always refresh the current pending set**. FITIDs skip anything already in the register.
+8. Later imports (including auto on open) fetch last posted − 7 days, or back to any still-open hold if older, and **always refresh pending in that window**. FITIDs skip anything already in the register.
 
 ## Success criteria
 

@@ -62,7 +62,8 @@ object SyncService {
                         Fetched(mapping, null, null, "${mapping.lunchFlowAccountId} is not enabled for this API key.")
                     } else {
                         try {
-                            val from = SyncEngine.fetchFromDate(mapping)
+                            val oldestPending = SyncEngine.oldestOpenPendingDate(book, mapping)
+                            val from = SyncEngine.fetchFromDate(mapping, oldestPending)
                             val txns = client.getTransactions(lf.id, from = from, to = today)
                             Fetched(mapping, lf, txns, null)
                         } catch (e: Exception) {
@@ -128,7 +129,7 @@ object SyncService {
             val named = item.mapping.withLunchFlow(item.lf)
             updated.add(
                 if (result.error == null) {
-                    named.afterSuccessfulImport(result.lastPostedDate)
+                    named.afterSuccessfulImport(result.lastPostedDate, result.oldestPendingDate)
                 } else {
                     named
                 }

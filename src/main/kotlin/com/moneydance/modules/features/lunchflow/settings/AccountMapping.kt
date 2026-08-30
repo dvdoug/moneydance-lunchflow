@@ -15,9 +15,9 @@ data class AccountMapping(
     val lunchFlowName: String? = null,
     val institutionName: String? = null
 ) {
-    fun afterSuccessfulImport(latestPosted: String?): AccountMapping {
+    fun afterSuccessfulImport(latestPosted: String?, oldestPending: String? = null): AccountMapping {
         val latest = latestPosted?.takeIf { it.isNotBlank() } ?: lastPostedDate
-        val rolled = nextStartAfter(latest)
+        val rolled = lookbackFloor(latest, oldestPending)
         val nextStart = when {
             rolled == null -> syncStartDate
             syncStartDate.isNullOrBlank() -> rolled
@@ -44,9 +44,18 @@ data class AccountMapping(
         fun plusDays(isoDate: String, days: Long): String =
             LocalDate.parse(isoDate).plusDays(days).toString()
 
-        fun nextStartAfter(lastPosted: String?): String? {
-            val last = lastPosted?.takeIf { it.isNotBlank() } ?: return null
-            return plusDays(last, -OVERLAP_DAYS)
+        fun nextStartAfter(lastPosted: String?): String? = lookbackFloor(lastPosted, null)
+
+        fun lookbackFloor(lastPosted: String?, oldestPending: String?): String? {
+            val posted = lastPosted?.takeIf { it.isNotBlank() }?.let { plusDays(it, -POSTED_OVERLAP_DAYS) }
+            val pending = oldestPending?.takeIf { it.isNotBlank() }?.let { plusDays(it, -PENDING_PAD_DAYS) }
+            return minIsoOrNull(posted, pending)
+        }
+
+        fun fetchFromDate(syncStart: String?, lastPosted: String?, oldestPending: String?): String? {
+            val persisted = syncStart?.takeIf { it.isNotBlank() }
+            val computed = lookbackFloor(lastPosted, oldestPending)
+            return minIsoOrNull(persisted, computed) ?: persisted ?: computed
         }
 
         fun maxIso(a: String, b: String): String {
@@ -55,8 +64,17 @@ data class AccountMapping(
             return if (left >= right) a.take(10) else b.take(10)
         }
 
-        /** Credit-card auths can sit for ~30 days; +1 for timezone/settlement lag. */
-        const val OVERLAP_DAYS: Long = 31
+        fun minIsoOrNull(a: String?, b: String?): String? {
+            val left = a?.takeIf { it.isNotBlank() }?.take(10)
+            val right = b?.takeIf { it.isNotBlank() }?.take(10)
+            if (left == null) return right
+            if (right == null) return left
+            return if (LocalDate.parse(left) <= LocalDate.parse(right)) left else right
+        }
+
+        /** Late posted rows (timezone, weekend, holiday clearing), not auth life. */
+        const val POSTED_OVERLAP_DAYS: Long = 7
+        const val PENDING_PAD_DAYS: Long = 1
     }
 }
 

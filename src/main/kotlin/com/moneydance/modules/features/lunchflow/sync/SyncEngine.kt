@@ -17,6 +17,7 @@ data class AccountSyncResult(
     val pendingPromoted: Int = 0,
     val pendingPayees: List<String> = emptyList(),
     val lastPostedDate: String? = null,
+    val oldestPendingDate: String? = null,
     val error: String? = null
 )
 
@@ -145,7 +146,8 @@ class SyncEngine(
             pendingUpdated = pendingUpdated,
             pendingRemoved = pendingRemoved,
             pendingPromoted = pendingPromoted,
-            lastPostedDate = latestPosted
+            lastPostedDate = latestPosted,
+            oldestPendingDate = oldestOpenPendingDate(book, mapping)
         )
     }
 
@@ -252,10 +254,20 @@ class SyncEngine(
     }
 
     companion object {
-        fun fetchFromDate(mapping: AccountMapping): String? {
-            mapping.syncStartDate?.takeIf { it.isNotBlank() }?.let { return it }
-            val last = mapping.lastPostedDate?.takeIf { it.isNotBlank() } ?: return null
-            return AccountMapping.nextStartAfter(last)
+        fun fetchFromDate(mapping: AccountMapping, oldestPending: String? = null): String? =
+            AccountMapping.fetchFromDate(mapping.syncStartDate, mapping.lastPostedDate, oldestPending)
+
+        fun oldestOpenPendingDate(book: AccountBook, mapping: AccountMapping): String? {
+            val account = book.getAccountByUUID(mapping.moneydanceAccountUuid) ?: return null
+            var oldest: Int? = null
+            for (txn in MdAccess.txnsForAccount(book, account)) {
+                if (txn !is ParentTxn) continue
+                if (!MdAccess.sameAccount(MdAccess.accountOf(txn), account)) continue
+                if (!FitIds.isPending(MdAccess.registerFiTxnId(txn, FitIds.PROTOCOL))) continue
+                val dateInt = MdAccess.getDateInt(txn)
+                if (oldest == null || dateInt < oldest) oldest = dateInt
+            }
+            return oldest?.let { dateIntToIso(it) }
         }
 
         fun isoToDateInt(iso: String): Int {

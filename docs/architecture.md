@@ -89,7 +89,7 @@ Pending → posted, **unique** match (exact amount, merchant case-insensitive, d
 
 ## First import window
 
-Per mapping, **sync start date** (`YYYY-MM-DD`). Default: first day of the current month. Blank = all history Lunch Flow will return **for this run**. After a successful import, set `syncStartDate = max(current start, lastPostedDate − 31 days)` so we only move From **forward** (never earlier than the user chose). A first sync from last week stays last week; a January backfill walks up to last posted − 31. Typing an older From and clicking Import still backfills; then the date walks forward again. Pending is always the current set (`include_pending=true`).
+Per mapping, **sync start date** (`YYYY-MM-DD`). Default: first day of the current month. Blank = all history Lunch Flow will return **for this run**. Fetch from = min(From, lastPosted − 7 days, oldest open lunchflow:pending: date − 1 day). Seven days covers late posted clearing (timezone, weekend, holiday), not card-auth life; live holds keep the window open for as long as they sit. After a successful import, persist `syncStartDate = max(current From, lastPosted − 7)` so From only moves **forward**. A January backfill then walks up to last posted − 7. Typing an older From and clicking Import still backfills. `include_pending=true`.
 
 Unconfirmed pending rows get a `[PENDING] ` **Description** prefix after `showDownloadedTxns`, so they stay visible in the register. `OnlineTxn.setName` and `ol.orig-payee` stay the raw merchant — Moneydance’s similar-payee matcher is prefix/suffix on that tag, and `[PENDING] ` at the front zeros the prefix score. Hidden FITID / `lunchflow.pending` remain the source of truth. Description prefix is stripped on promote to posted; a leftover `[PENDING] ` on `ol.orig-payee` is stripped on our FITIDs at import.
 
@@ -98,13 +98,13 @@ Currency: if Lunch Flow `currency` is set and differs from the Moneydance accoun
 ## Sync algorithm
 
 1. HTTP off the EDT (`SyncService` / `SwingWorker`). Apply download-list writes and `showDownloadedTxns` on the EDT.
-2. `GET /accounts/{id}/transactions?include_pending=true&from=&to=` (`to` = today; `from` = mapping start date, or last posted − 31 days if start is blank).
+2. `GET /accounts/{id}/transactions?include_pending=true&from=&to=` (`to` = today; `from` = min of mapping start, last posted − 7, oldest open hold − 1).
 3. Skip only FITIDs still on **live register** `ParentTxn`s on that account. Prune download-list rows whose FITID is already on the register.
 4. Posted with a non-null id: skip if FITID known; else `downloaded.newTxn()`, fill, `STATUS_NEW`.
 5. Pending: set-reconcile register parents with our pending FITID prefix (promote unique matches even if already confirmed; delete vanished holds even if confirmed); else add a NEW download.
 6. `downloaded.syncItem()` + `account.downloadedTxnsUpdated()`.
 7. `MoneydanceGUI.showDownloadedTxns(account)`.
-8. On success, persist `lastPostedDate` and roll `syncStartDate` to last posted − 31 days.
+8. On success, persist `lastPostedDate` and roll `syncStartDate` forward to last posted − 7 days (not earlier than the From the user set).
 
 Amount sign: Lunch Flow `amount` is signed cashflow on `OnlineTxn.setAmount` (negative = money leaving the account). Register signs are owned by Moneydance’s converter.
 

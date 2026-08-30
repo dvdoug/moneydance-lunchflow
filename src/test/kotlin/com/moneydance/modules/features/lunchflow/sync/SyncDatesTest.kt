@@ -15,7 +15,13 @@ class SyncDatesTest {
     @Test
     fun overlapFromLastPostedWhenStartBlank() {
         val mapping = AccountMapping(1, "u", null, "2026-03-10")
-        assertEquals("2026-02-07", SyncEngine.fetchFromDate(mapping))
+        assertEquals("2026-03-03", SyncEngine.fetchFromDate(mapping))
+    }
+
+    @Test
+    fun openPendingPullsFetchEarlierThanFrom() {
+        val mapping = AccountMapping(1, "u", "2026-08-22", "2026-08-29")
+        assertEquals("2026-08-09", SyncEngine.fetchFromDate(mapping, "2026-08-10"))
     }
 
     @Test
@@ -32,9 +38,10 @@ class SyncDatesTest {
 
     @Test
     fun nextStartIsLastPostedMinusOverlap() {
-        assertEquals("2026-07-29", AccountMapping.nextStartAfter("2026-08-29"))
+        assertEquals("2026-08-22", AccountMapping.nextStartAfter("2026-08-29"))
         assertNull(AccountMapping.nextStartAfter(null))
         assertNull(AccountMapping.nextStartAfter("  "))
+        assertEquals("2026-08-09", AccountMapping.lookbackFloor("2026-08-29", "2026-08-10"))
     }
 
     @Test
@@ -49,21 +56,28 @@ class SyncDatesTest {
     fun successfulImportRollsStartForwardOnly() {
         val mapping = AccountMapping(1, "u", "2026-01-01", null)
         val next = mapping.afterSuccessfulImport("2026-08-29")
-        assertEquals("2026-07-29", next.syncStartDate)
+        assertEquals("2026-08-22", next.syncStartDate)
     }
 
     @Test
-    fun recentFirstOfMonthStaysPut() {
+    fun firstOfMonthWalksForwardOnceOverlapPassesIt() {
         val mapping = AccountMapping(1, "u", "2026-08-01", null)
         val next = mapping.afterSuccessfulImport("2026-08-29")
-        assertEquals("2026-08-01", next.syncStartDate)
+        assertEquals("2026-08-22", next.syncStartDate)
     }
 
     @Test
     fun blankStartGetsOverlapWindow() {
         val mapping = AccountMapping(1, "u", null, null)
         val next = mapping.afterSuccessfulImport("2026-08-29")
-        assertEquals("2026-07-29", next.syncStartDate)
+        assertEquals("2026-08-22", next.syncStartDate)
+    }
+
+    @Test
+    fun persistDoesNotJumpBackForAnOpenHold() {
+        val mapping = AccountMapping(1, "u", "2026-08-22", "2026-08-29")
+        val next = mapping.afterSuccessfulImport("2026-08-29", "2026-08-10")
+        assertEquals("2026-08-22", next.syncStartDate)
     }
 
     @Test
