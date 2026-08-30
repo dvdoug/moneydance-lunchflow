@@ -4,7 +4,7 @@ Take a **File → Export Backup** before the first import on a file you care abo
 
 ## Install
 
-1. Download the latest `lunchflow-unsigned-vN.mxt` from [Releases](https://github.com/dvdoug/moneydance-lunchflow/releases), or use the signed `dist/lunchflow.mxt` if you built it yourself.
+1. Download the latest `.mxt` from [Releases](https://github.com/dvdoug/moneydance-lunchflow/releases).
 2. **Extensions → Manage Extensions → Add from File…** and choose that file.
 3. Accept the unrecognized-signature warning until Infinite Kind list the extension in the store.
 
