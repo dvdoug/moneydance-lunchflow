@@ -46,7 +46,7 @@ class SyncEngine(
         val pendingLf = txns.filter { it.isPending }
         val postedLf = txns.filter { !it.isPending && !it.id.isNullOrBlank() }
 
-        val pendingRegister = mutableMapOf<String, ParentTxn>()
+        val ourPending = linkedMapOf<String, ParentTxn>()
         for (txn in MdAccess.txnsForAccount(book, mdAccount)) {
             if (txn !is ParentTxn) continue
             if (!MdAccess.sameAccount(MdAccess.accountOf(txn), mdAccount)) continue
@@ -54,8 +54,7 @@ class SyncEngine(
             if (FitIds.isOurs(id) || FitIds.isPending(id)) {
                 sanitizeOrigPayee(txn)
             }
-            if (!MdAccess.isNew(txn)) continue
-            if (FitIds.isPending(id) && id != null) pendingRegister[id] = txn
+            if (FitIds.isPending(id) && id != null) ourPending[id] = txn
         }
 
         val desiredPending = linkedMapOf<String, LunchFlowTransaction>()
@@ -64,8 +63,8 @@ class SyncEngine(
         }
 
         val newPosted = postedLf.filter { FitIds.posted(lfAccount.id, it.id!!) !in known }
-        val dropped = pendingRegister.keys.filter { it !in desiredPending }.mapNotNull { key ->
-            val snap = snapshotFromParent(mdAccount, pendingRegister[key]!!) ?: return@mapNotNull null
+        val dropped = ourPending.filterKeys { it !in desiredPending }.mapNotNull { (key, parent) ->
+            val snap = snapshotFromParent(mdAccount, parent) ?: return@mapNotNull null
             key to snap
         }
         val promotions = PendingMatch.uniquePairs(dropped, newPosted)
@@ -81,9 +80,17 @@ class SyncEngine(
         var latestPosted: String? = mapping.lastPostedDate
 
         for (pair in promotions) {
-            val existing = pendingRegister.remove(pair.pendingKey) ?: continue
+            val existing = ourPending.remove(pair.pendingKey) ?: continue
             val fitId = FitIds.posted(lfAccount.id, pair.posted.id!!)
-            MdAccess.setDescription(existing, pair.posted.payee())
+            val confirmed = !MdAccess.isNew(existing)
+            MdAccess.setDescription(
+                existing,
+                FitIds.settledDescription(
+                    MdAccess.getDescription(existing).orEmpty(),
+                    pair.posted.payee(),
+                    confirmed
+                )
+            )
             sanitizeOrigPayee(existing)
             MdAccess.clearPendingFlag(existing)
             MdAccess.setRegisterFitId(existing, fitId)
@@ -107,7 +114,7 @@ class SyncEngine(
         }
 
         for ((key, txn) in desiredPending) {
-            val existing = pendingRegister.remove(key)
+            val existing = ourPending.remove(key)
             if (existing != null) {
                 pendingUpdated++
             } else if (key in known) {
@@ -119,8 +126,12 @@ class SyncEngine(
             }
         }
 
-        for ((key, existing) in pendingRegister) {
+        for ((key, existing) in ourPending) {
             if (key in promotedPendingKeys) continue
+            if (!MdAccess.isNew(existing)) {
+                stripPendingDescription(existing)
+                continue
+            }
             MdAccess.deleteTxn(existing)
             pendingRemoved++
         }
@@ -210,6 +221,12 @@ class SyncEngine(
         }
         txn.setParameter(FitIds.PARAM_PENDING, true)
         txn.syncItem()
+    }
+
+    private fun stripPendingDescription(txn: ParentTxn) {
+        val current = MdAccess.getDescription(txn).orEmpty()
+        if (!current.startsWith(FitIds.PENDING_LABEL)) return
+        MdAccess.setDescription(txn, FitIds.stripPendingLabel(current))
     }
 
     private fun sanitizeOrigPayee(txn: ParentTxn) {

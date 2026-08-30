@@ -25,4 +25,20 @@ class FitIdsTest {
         assertEquals("[PENDING] TFL TRAVEL CHARGE", FitIds.withPendingLabel("[PENDING] TFL TRAVEL CHARGE"))
         assertEquals("ol.orig-payee", FitIds.ORIG_PAYEE_TAG)
     }
+
+    @Test
+    fun settledDescriptionKeepsConfirmedPayee() {
+        assertEquals(
+            "Tesco",
+            FitIds.settledDescription("[PENDING] Tesco", "TESCO STORES 123", alreadyConfirmed = true)
+        )
+        assertEquals(
+            "TESCO STORES 123",
+            FitIds.settledDescription("[PENDING] Tesco", "TESCO STORES 123", alreadyConfirmed = false)
+        )
+        assertEquals(
+            "Waitrose",
+            FitIds.settledDescription("Waitrose", "WAITROSE 2844", alreadyConfirmed = true)
+        )
+    }
 }

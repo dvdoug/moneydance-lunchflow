@@ -38,6 +38,12 @@ object FitIds {
 
     fun withPendingLabel(text: String): String = PENDING_LABEL + stripPendingLabel(text)
 
+    /** Confirmed rows keep the user's Description minus our label. Unconfirmed take the settled payee. */
+    fun settledDescription(current: String, postedPayee: String, alreadyConfirmed: Boolean): String {
+        if (!alreadyConfirmed) return postedPayee
+        return stripPendingLabel(current).ifBlank { postedPayee }
+    }
+
     fun synthHash(txn: LunchFlowTransaction): String {
         val raw = listOf(
             txn.date,

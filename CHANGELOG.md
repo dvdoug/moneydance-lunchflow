@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 41 - 2026-08-30
+
+### Changed
+- Confirming a pending hold to clear the blue dot no longer freezes `[PENDING]` on that row. When it settles and uniquely matches, we retarget that same register txn (posted FITID, drop the label). Reminder or typed rows are still left for you to Merge.
+
 ## 40 - 2026-08-30
 
 ### Fixed
