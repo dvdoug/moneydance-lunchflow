@@ -71,8 +71,8 @@ jobs:
           fi
           notes=$(mktemp)
           awk -v ver="$BUILD" '
-            $0 ~ "^## \\[" ver "\\]" {p=1; print; next}
-            p && /^## \[/ {exit}
+            $0 ~ "^## " ver "( |$)" {p=1; next}
+            p && /^## / {exit}
             p {print}
           ' CHANGELOG.md > "$notes"
           if [ ! -s "$notes" ]; then

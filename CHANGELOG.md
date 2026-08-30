@@ -7,62 +7,62 @@ This project uses Moneydance **integer `module_build`** (shown as vN in Extensio
 
 Reconstructed from the 2026-08-29 development session. There are no git tags for these builds.
 
-## [Unreleased]
+## Unreleased
 
 ### Added
 - GitHub Actions CI: unit tests on PRs; unsigned `.mxt` on master as a 90-day workflow artifact and a lasting GitHub Release (`v{module_build}`).
 
-## [31] - 2026-08-29
+## 31 - 2026-08-29
 
 ### Fixed
 - After import, From only moves forward (`max` of the date you set and last posted minus 31 days). A first sync from last week no longer jumps back a month.
 
-## [30] - 2026-08-29
+## 30 - 2026-08-29
 
 ### Removed
 - Save mappings button. Mappings persist on Import and on Close / X / Alt+F4 / Escape.
 
-## [29] - 2026-08-29
+## 29 - 2026-08-29
 
 ### Added
 - Save mappings when the Lunch Flow window closes.
 
-## [28] - 2026-08-29
+## 28 - 2026-08-29
 
 ### Changed
 - Post-import fetch window is last posted minus 31 days (card-auth life plus a one-day buffer).
 
-## [27] - 2026-08-29
+## 27 - 2026-08-29
 
 ### Changed
 - After a successful import, walk From forward so later runs (including auto-import) do not re-download the original backfill.
 
-## [26] - 2026-08-29
+## 26 - 2026-08-29
 
 ### Added
 - Optional import when the data file opens, plus progress on the Moneydance status bar and `lunchflow:` lines in Help → Console.
 
-## [25] - 2026-08-29
+## 25 - 2026-08-29
 
 ### Removed
 - Homemade register-row factory used when Moneydance’s download converter left leftovers.
 
-## [24] - 2026-08-29
+## 24 - 2026-08-29
 
 ### Removed
 - One-time “ready to merge older imports” repair for homemade v19 rows.
 
-## [23] - 2026-08-29
+## 23 - 2026-08-29
 
 ### Changed
 - Quieter status wording for that one-time merge repair.
 
-## [22] - 2026-08-29
+## 22 - 2026-08-29
 
 ### Changed
 - Import writes downloaded transactions and calls Moneydance’s built-in converter so Confirm / Merge works like OFX.
 
-## [21] - 2026-08-29
+## 21 - 2026-08-29
 
 ### Fixed
 - Inverted amounts on homemade Current rows; pending cleanup only deletes unconfirmed holds we tagged.
@@ -70,97 +70,98 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 ### Security
 - Stop writing the API key to plaintext local storage (migrate into the auth cache).
 
-## [20] - 2026-08-29
+## 20 - 2026-08-29
 
 ### Changed
 - Plain-English import status and marketplace blurb that leads with UK/EU Open Banking.
 
-## [19] - 2026-08-29
+## 19 - 2026-08-29
 
 ### Fixed
 - Hidden downloads on accounts without OFX now appear as unconfirmed register rows (split attached).
 
-## [18] - 2026-08-29
+## 18 - 2026-08-29
 
 ### Changed
 - Convert leftover NEW downloads into unconfirmed register transactions (incomplete without v19’s split attach).
 
-## [17] - 2026-08-29
+## 17 - 2026-08-29
 
 ### Fixed
 - Treat a FITID as imported only if it is still on a live register transaction, not because it sits in the download list.
 
-## [16] - 2026-08-29
+## 16 - 2026-08-29
 
 ### Fixed
 - After you delete imported rows, drop leftover accepted downloads so the next import can recreate them. Status text wraps.
 
-## [15] - 2026-08-29
+## 15 - 2026-08-29
 
 ### Changed
 - Compact settings window: mapping table, short status, Account Access hint, unofficial-extension footer.
 
-## [14] - 2026-08-29
+## 14 - 2026-08-29
 
 ### Changed
 - Help and docs spell out Lunch Flow Account Access (API key only sees enabled destination accounts).
 
-## [13] - 2026-08-29
+## 13 - 2026-08-29
 
 ### Changed
 - Status hint when Refresh returns a single Lunch Flow account.
 
-## [11] - 2026-08-29
+## 11 - 2026-08-29
 
 ### Fixed
 - Duplicate Window menu entry; window title stays Lunch Flow (not the data-file name).
 
-## [10] - 2026-08-29
+## 10 - 2026-08-29
 
 ### Fixed
 - Relabel existing pending register rows with `[PENDING]` on later imports instead of skipping them silently.
 
-## [9] - 2026-08-29
+## 9 - 2026-08-29
 
 ### Fixed
 - Fetch from the mapping start date, and persist downloads so they survive restart.
 
-## [8] - 2026-08-29
+## 8 - 2026-08-29
 
 ### Changed
 - Mapping table, persist the API key in the data file, show downloaded transactions after sync.
 
-## [7] - 2026-08-29
+## 7 - 2026-08-29
 
 ### Added
 - Map Lunch Flow accounts to Moneydance accounts, per-account start date, and Sync now.
 
-## [6] - 2026-08-29
+## 6 - 2026-08-29
 
 ### Changed
 - Drop the extra 0.0.x display version. Extensions only show integer vN.
 
-## [5] - 2026-08-29
+## 5 - 2026-08-29
 
 ### Changed
 - Align the (short-lived) dotted display string with `module_build`.
 
-## [4] - 2026-08-29
+## 4 - 2026-08-29
 
 ### Fixed
 - Call `www.lunchflow.app` and follow HTTPS redirects so Test connection is not a false 308 failure.
 
-## [3] - 2026-08-29
+## 3 - 2026-08-29
 
 ### Added
 - API key settings, Test connection, and Personal API account listing.
 
-## [2] - 2026-08-29
+## 2 - 2026-08-29
 
 ### Changed
 - Vendor and in-app copy: Doug Wright; Lunch Flow named as an unaffiliated third-party service.
 
-## [1] - 2026-08-29
+## 1 - 2026-08-29
 
 ### Added
 - Kotlin FeatureModule skeleton that loads as `lunchflow.mxt` under Extensions → Lunch Flow.
+
