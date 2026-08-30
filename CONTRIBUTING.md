@@ -52,7 +52,7 @@ On **master** it also packages an **unsigned** `.mxt` (compiled classes + `meta_
 - **Workflow artifact** (Actions → run → Artifacts): convenient, expires in 90 days.
 - **GitHub Release** on tag `v{module_build}`: the lasting download. CI creates the tag and Release the first time that build number hits master; it will not move or replace an existing tag (module_build is irrevocable). Changelog text for that version is the release notes.
 
-Moneydance will warn that the signature is unrecognized until Infinite Kind counter-signs a store build. Local `gradlew lunchflow` still signs with your gitignored key.
+Moneydance will warn that the signature is unrecognized until Infinite Kind counter-signs a store build. **Always package locally** with `gradlew test lunchflow` (signed `dist/lunchflow.mxt`) for the build you will install. CI’s unsigned Release is a public download, not a substitute for that local signed file.
 
 DevKit jars are not in git. CI (and a first clone) run `fetchMdJars`, which pulls `moneydance-dev.jar` / `extadmin.jar` from [moneydance_open](https://github.com/TheInfiniteKind/moneydance_open).
 

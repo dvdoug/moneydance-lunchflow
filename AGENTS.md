@@ -73,6 +73,7 @@ Do not rename the extension ID after the first public build. Infinite Kind treat
 - Keep this file true. If you change architecture, IDs, or commands, update `AGENTS.md` and the matching doc in `docs/` in the same change.
 - **Changelog.** Maintain [CHANGELOG.md](CHANGELOG.md) using Keep a Changelog *categories* (Added/Changed/Fixed/Removed/Security). Headings are `## Unreleased` and `## 31 - YYYY-MM-DD` (integer `module_build`, **no square brackets** — those are for SemVer link refs). Every bump gets a **1–2 line high-level** entry. GitHub Release notes copy the section **body** only (the Release title is already `Lunch Flow vN`).
 - **Commit and push every iteration**, even when `module_build` does not change (docs, polish, tests). Do not leave a day’s work only in the working tree. `git push origin` the current branch after each commit (this repo: `master`). Never commit keys, `userconfig/`, `lib/*.jar`, or `*.mxt`.
+- **Build the `.mxt` locally** on every iteration that the owner will install (`gradlew test lunchflow` → `dist/lunchflow.mxt`, signed with the gitignored key). CI’s unsigned GitHub Release is extra, not a replacement. Do not skip the local package because Actions ran.
 
 ## Non-goals (unless the user asks)
 
