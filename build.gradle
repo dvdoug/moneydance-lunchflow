@@ -56,7 +56,7 @@ if (userPropsFile.exists()) {
 
 def mdDevJar = file("${libDir}/moneydance-dev.jar")
 def extAdminJar = file("${libDir}/extadmin.jar")
-def kotlinStdlibJar = file("${libDir}/kotlin-stdlib-1.9.21.jar")
+def kotlinStdlibJar = file("${libDir}/kotlin-stdlib-2.4.10.jar")
 
 configurations {
     mdTools {
@@ -67,11 +67,11 @@ configurations {
 
 dependencies {
     compileOnly files(mdDevJar)
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:1.9.21"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:2.4.10"
     mdTools files(mdDevJar, extAdminJar, kotlinStdlibJar)
     testImplementation files(mdDevJar)
-    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.21"
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.9.21"
+    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:2.4.10"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:2.4.10"
 }
 
 def mdOpenLibBase = "https://raw.githubusercontent.com/TheInfiniteKind/moneydance_open/refs/heads/main/lib"
@@ -84,7 +84,7 @@ tasks.register("fetchMdJars") {
         [
             "moneydance-dev.jar",
             "extadmin.jar",
-            "kotlin-stdlib-1.9.21.jar"
+            "kotlin-stdlib-2.4.10.jar"
         ].each { name ->
             def dest = file("${libDir}/${name}")
             if (dest.exists() && dest.length() > 10_000) {
