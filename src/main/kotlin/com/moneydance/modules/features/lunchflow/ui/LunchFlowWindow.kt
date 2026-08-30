@@ -47,7 +47,7 @@ class LunchFlowWindow(
         isOpaque = false
         border = BorderFactory.createEmptyBorder()
     }
-    private val mappingPanel = AccountMappingPanel(book)
+    private val mappingPanel = AccountMappingPanel(book, mdGUI)
     private val refreshButton = JButton("Refresh accounts")
     private val saveButton = JButton("Save key")
     private val forgetButton = JButton("Remove key")

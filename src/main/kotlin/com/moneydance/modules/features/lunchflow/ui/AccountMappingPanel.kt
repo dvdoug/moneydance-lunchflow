@@ -2,11 +2,16 @@ package com.moneydance.modules.features.lunchflow.ui
 
 import com.infinitekind.moneydance.model.Account
 import com.infinitekind.moneydance.model.AccountBook
+import com.moneydance.apps.md.view.gui.MoneydanceGUI
+import com.moneydance.awt.JDateField
 import com.moneydance.modules.features.lunchflow.api.LunchFlowAccount
 import com.moneydance.modules.features.lunchflow.settings.AccountMapping
 import com.moneydance.modules.features.lunchflow.sync.MdAccess
 import com.moneydance.modules.features.lunchflow.sync.MdAccounts
+import com.moneydance.modules.features.lunchflow.sync.SyncEngine
 import java.awt.BorderLayout
+import java.awt.Component
+import javax.swing.AbstractCellEditor
 import javax.swing.DefaultCellEditor
 import javax.swing.JComboBox
 import javax.swing.JLabel
@@ -15,9 +20,12 @@ import javax.swing.JScrollPane
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
 import javax.swing.table.AbstractTableModel
+import javax.swing.table.DefaultTableCellRenderer
+import javax.swing.table.TableCellEditor
 
 class AccountMappingPanel(
-    book: AccountBook?
+    book: AccountBook?,
+    mdGUI: MoneydanceGUI
 ) : JPanel(BorderLayout(0, 8)) {
 
     private val mdChoices: List<AccountChoice> = listOf(AccountChoice(null)) +
@@ -34,12 +42,14 @@ class AccountMappingPanel(
         table.tableHeader.reorderingAllowed = false
         table.putClientProperty("terminateEditOnFocusLost", true)
         table.columnModel.getColumn(1).cellEditor = DefaultCellEditor(JComboBox(mdChoices.toTypedArray()))
+        table.columnModel.getColumn(2).cellEditor = FromDateEditor(mdGUI)
+        table.columnModel.getColumn(2).cellRenderer = FromDateRenderer(mdGUI)
         table.columnModel.getColumn(0).preferredWidth = 280
-        table.columnModel.getColumn(1).preferredWidth = 240
-        table.columnModel.getColumn(2).preferredWidth = 100
+        table.columnModel.getColumn(1).preferredWidth = 220
+        table.columnModel.getColumn(2).preferredWidth = 130
         add(JScrollPane(table), BorderLayout.CENTER)
         add(
-            JLabel("Missing a bank? Enable it in Lunch Flow under Destinations → Account Access, then Refresh accounts."),
+            JLabel("From uses your Moneydance date format (click for a calendar). Clear it for all history Lunch Flow has. Missing a bank? Enable it under Destinations → Account Access, then Refresh accounts."),
             BorderLayout.SOUTH
         )
     }
@@ -113,7 +123,10 @@ class AccountMappingPanel(
             val row = rows[rowIndex]
             when (columnIndex) {
                 1 -> row.mdUuid = (aValue as? AccountChoice)?.account?.let { MdAccess.uuid(it) }
-                2 -> row.startDate = aValue?.toString()
+                2 -> {
+                    val text = aValue?.toString()?.trim()
+                    row.startDate = text?.ifBlank { null }
+                }
             }
             fireTableCellUpdated(rowIndex, columnIndex)
         }
@@ -146,5 +159,48 @@ class AccountMappingPanel(
         }
 
         override fun hashCode(): Int = account?.let { MdAccess.uuid(it) }?.hashCode() ?: 0
+    }
+
+    private class FromDateEditor(mdGUI: MoneydanceGUI) : AbstractCellEditor(), TableCellEditor {
+        private val field = JDateField(mdGUI)
+
+        override fun getTableCellEditorComponent(
+            table: JTable,
+            value: Any?,
+            isSelected: Boolean,
+            row: Int,
+            column: Int
+        ): Component {
+            val iso = value as? String
+            if (iso.isNullOrBlank()) {
+                field.text = ""
+            } else {
+                field.setDateInt(SyncEngine.isoToDateInt(iso))
+            }
+            return field
+        }
+
+        override fun getCellEditorValue(): Any {
+            if (field.text.trim().isEmpty()) return ""
+            val dateInt = field.parseDateInt()
+            return SyncEngine.dateIntToIso(dateInt)
+        }
+    }
+
+    private class FromDateRenderer(mdGUI: MoneydanceGUI) : DefaultTableCellRenderer() {
+        private val format = mdGUI.preferences.shortDateFormatter
+
+        override fun setValue(value: Any?) {
+            val iso = value as? String
+            text = if (iso.isNullOrBlank()) {
+                "All history"
+            } else {
+                try {
+                    format.format(SyncEngine.isoToDateInt(iso))
+                } catch (_: Exception) {
+                    iso
+                }
+            }
+        }
     }
 }
