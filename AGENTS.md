@@ -4,7 +4,7 @@ Instructions for AI coding agents working in this repository. Humans should star
 
 ## Current state (read this first)
 
-Shipped locally as **`module_build` 31** (`Version.kt`, `meta_info.dict`, and [CHANGELOG.md](CHANGELOG.md) must stay in lockstep). Phase 3 import is done. Phase 4 polish is in progress.
+Shipped locally as **`module_build` 32** (`Version.kt`, `meta_info.dict`, and [CHANGELOG.md](CHANGELOG.md) must stay in lockstep). Phase 3 import is done. Phase 4 polish is in progress.
 
 **Import path (do not regress):** write `OnlineTxn`s onto `account.getDownloadedTxns()`, then `MoneydanceGUI.showDownloadedTxns(account)` (`OnlineManager.processDownloadedTxns`). That is Moneydance’s OFX Confirm / Merge path (`ol.orig-txn`, blue dots). **Do not create `ParentTxn`s.** v19–v21 custom `ParentTxn` factories and “attach missing original” repairs were deleted on purpose.
 
@@ -12,7 +12,7 @@ Shipped locally as **`module_build` 31** (`Version.kt`, `meta_info.dict`, and [C
 
 - Settings: paste API key, Save key, Remove key. Persist with `LocalStorage.cacheAuthentication` only (`lunchflow.apiKey`). Legacy plaintext `LocalStorage.put` is migrated then deleted.
 - Mapping table: Lunch Flow account → Moneydance account + **From** date. Saved as `lunchflow.mappings`. **No Save mappings button.** Persist on **Import**, and on Close / title-bar X / Alt+F4 / Escape (`goneAway`), but only if accounts loaded this session (do not wipe mappings if the table never populated).
-- **Import** and **import when this file opens** (checkbox, default **on** unless `lunchflow.importOnOpen=false`) share `SyncService`. HTTP off EDT; `showDownloadedTxns` + pending reconcile on EDT.
+- **Import** and **import when this file opens** (checkbox, default **off** until `lunchflow.importOnOpen=true`) share `SyncService`. HTTP off EDT; `showDownloadedTxns` + pending reconcile on EDT.
 - Progress: `MoneydanceGUI.setStatus("Lunch Flow: …", progress)` and Help → Console (`lunchflow:` via `System.err` + `AppDebug.ALL`). Never log the key.
 - From date: this run uses `syncStartDate` if set (default first of month). If From is **blank** and we already have `lastPostedDate`, fetch last posted − 31 days. Only blank From **and** no last posted omits `from=` (all history Lunch Flow returns). After a **successful** import, set From to `max(current From, lastPostedDate − 31 days)` — never earlier than the date the user set. A first sync from “one week ago” stays one week ago. A long backfill (e.g. January) walks forward to last posted − 31. User can type an older From to backfill; then it walks forward again. `from=` older than the bank/consent window should 200 with fewer rows, not 4xx (see [docs/lunchflow-api.md](docs/lunchflow-api.md)).
 - Posted FITID `lunchflow:{accountId}:{txnId}`; pending `lunchflow:pending:…`. Skip only live register `ParentTxn` FITIDs. Pending set-reconcile **unconfirmed** (`isNew`) pending parents on the mapped account only; never `deleteItem` confirmed rows.
@@ -149,7 +149,7 @@ DevKit / API: https://infinitekind.com/developer and https://infinitekind.com/de
 
 - Settings: paste API key, **Save key** / **Refresh accounts**, clear 401/403 copy. Refresh is the connection test (no separate Test button).
 - Account mapping: Lunch Flow `name` · `institution_name` → Moneydance account + From date. Persist on Import and window close, not a Save mappings button.
-- **Import** and optional auto-import on `md:file:opened` (per-file checkbox, default on). Status bar + Help → Console. Never log the API key. Cancel-in-progress is still missing.
+- **Import** and optional auto-import on `md:file:opened` (per-file checkbox, default **off**). Status bar + Help → Console. Never log the API key. Cancel-in-progress is still missing.
 - Help button must eventually be a 101 setup guide. Stopgap URL is Lunch Flow’s API destination page.
 
 ## Verification

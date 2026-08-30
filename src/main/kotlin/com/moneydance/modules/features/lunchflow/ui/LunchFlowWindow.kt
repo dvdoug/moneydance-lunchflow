@@ -73,7 +73,7 @@ class LunchFlowWindow(
         refreshButton.addActionListener { refreshAccounts() }
         forgetButton.addActionListener { forgetKey() }
         syncButton.addActionListener { syncNow() }
-        importOnOpenBox.isSelected = settings?.importOnOpen() ?: true
+        importOnOpenBox.isSelected = settings?.importOnOpen() ?: false
         importOnOpenBox.addActionListener {
             val on = importOnOpenBox.isSelected
             settings?.setImportOnOpen(on)

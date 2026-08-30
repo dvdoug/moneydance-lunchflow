@@ -28,7 +28,7 @@ Requires **Moneydance 2024** or newer.
 6. Map each Lunch Flow account to a Moneydance bank or credit-card account. **From** is how far back the first import looks (default: first of this month; blank: all history Lunch Flow has). Later imports only look back about a month so they stay fast; type an older date whenever you want a backfill.
 7. Click **Import**. New rows show as unconfirmed downloads (blue dots) so you can Confirm or Merge in the register, the same way as OFX. Pending card holds are labelled `[PENDING]`.
 
-Mappings are saved when you Import or close the window. Tick **Import when this file opens** if you want a fetch each time you open this data file (on by default once a key and mappings are saved). Uncheck it until you are happy with the mappings.
+Mappings are saved when you Import or close the window. Tick **Import when this file opens** if you want a fetch each time you open this data file (off until you opt in).
 
 Take a **File → Export Backup** before the first import on a real data file.
 

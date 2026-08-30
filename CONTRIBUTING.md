@@ -25,7 +25,7 @@ Prefer the throwaway file **Lunch Flow testing**. The owner may also alpha the m
 
 Moneydance reopens the **last** file. After a throwaway session, **File → Open** the real dataset before closing if that is what they want next.
 
-The key goes in extension Settings only. Auto-import on file open is default on once a file has a key and mappings; uncheck **Import when this file opens** until mappings are right.
+The key goes in extension Settings only. Auto-import on file open is **off** until the user ticks **Import when this file opens**.
 
 ## Installing a new build
 

@@ -58,7 +58,7 @@ Per **data file**, not per machine:
 - API key
 - Account mappings (`lunchFlowAccountId` → Moneydance account UUID)
 - Per-mapping `syncStartDate`, `lastPostedDate`
-- Auto-import on file open (`lunchflow.importOnOpen`, default on)
+- Auto-import on file open (`lunchflow.importOnOpen`, default off)
 
 Cleared status follows Moneydance **Mark Transactions as Cleared When Confirmed**, not our import code.
 

@@ -77,7 +77,7 @@ class SettingsStoreTest {
     }
 
     @Test
-    fun importOnOpenDefaultsTrue() {
+    fun importOnOpenDefaultsFalse() {
         val plain = mutableMapOf<String, String>()
         val store = SettingsStore(
             getAuth = { null },
@@ -86,11 +86,11 @@ class SettingsStoreTest {
             getPlain = { plain[it] },
             setPlain = { k, v -> plain[k] = v }
         )
-        assertEquals(true, store.importOnOpen())
-        store.setImportOnOpen(false)
-        assertEquals("false", plain[SettingsStore.IMPORT_ON_OPEN])
         assertEquals(false, store.importOnOpen())
         store.setImportOnOpen(true)
+        assertEquals("true", plain[SettingsStore.IMPORT_ON_OPEN])
         assertEquals(true, store.importOnOpen())
+        store.setImportOnOpen(false)
+        assertEquals(false, store.importOnOpen())
     }
 }

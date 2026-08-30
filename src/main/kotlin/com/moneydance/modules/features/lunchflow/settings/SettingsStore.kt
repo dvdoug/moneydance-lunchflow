@@ -40,7 +40,7 @@ class SettingsStore(
         setPlain(MAPPINGS, AccountMappingCodec.toJson(mappings))
     }
 
-    fun importOnOpen(): Boolean = getPlain(IMPORT_ON_OPEN) != "false"
+    fun importOnOpen(): Boolean = getPlain(IMPORT_ON_OPEN) == "true"
 
     fun setImportOnOpen(enabled: Boolean) {
         setPlain(IMPORT_ON_OPEN, if (enabled) "true" else "false")

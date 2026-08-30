@@ -35,7 +35,7 @@ Do these in order. Do not start marketplace outreach until the checkboxes in pha
 
 - [x] Import progress on the Moneydance status bar + Help → Console (`lunchflow:` lines); per-account summary in the window
 - [ ] Cancel in-progress import
-- [x] Optional auto-import on `md:file:opened` (per-file checkbox, default on)
+- [x] Optional auto-import on `md:file:opened` (per-file checkbox, default off)
 - [x] Mappings save on Import and window close (X / Alt+F4 / Close); no Save mappings button
 - [x] After success, roll From to last posted − 31 days
 - [x] `module_desc` leads with UK/EU Open Banking
