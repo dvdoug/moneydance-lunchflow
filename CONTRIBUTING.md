@@ -55,3 +55,5 @@ On **master** it also packages an **unsigned** `.mxt` (compiled classes + `meta_
 Moneydance will warn that the signature is unrecognized until Infinite Kind counter-signs a store build. Local `gradlew lunchflow` still signs with your gitignored key.
 
 DevKit jars are not in git. CI (and a first clone) run `fetchMdJars`, which pulls `moneydance-dev.jar` / `extadmin.jar` from [moneydance_open](https://github.com/TheInfiniteKind/moneydance_open).
+
+Dependabot (`.github/dependabot.yml`) opens weekly PRs for GitHub Actions and Gradle plugins. Merge those when CI is green; they are not `module_build` bumps.

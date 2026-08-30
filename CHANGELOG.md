@@ -11,6 +11,10 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ### Added
 - GitHub Actions CI: unit tests on PRs; unsigned `.mxt` on master as a 90-day workflow artifact and a lasting GitHub Release (`v{module_build}`).
+- Dependabot weekly updates for GitHub Actions and Gradle.
+
+### Changed
+- CI actions: checkout v7, setup-java v6, upload-artifact v7 (Node 24; old v4 majors are deprecated).
 
 ## 31 - 2026-08-29
 
