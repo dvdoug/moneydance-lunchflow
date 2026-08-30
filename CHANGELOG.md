@@ -9,6 +9,9 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+### Changed
+- User docs: split Moneydance mapping vs Lunch Flow amount/date options; link Lunch Flow reverse-amounts help.
+
 ## 36 - 2026-08-29
 
 ### Fixed

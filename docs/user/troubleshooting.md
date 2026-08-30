@@ -18,9 +18,20 @@ Open-banking connections often expire (commonly about 90 days). Lunch Flow’s [
 
 This extension asks Lunch Flow for pending transactions. They show as `[PENDING]` until they post. Lunch Flow’s own [pending](https://www.lunchflow.app/docs/guides/troubleshooting/pending-transactions) page explains why some banks barely expose holds. If a hold never appears, that is usually the bank, not the mapping.
 
-## Wrong account or inverted amounts
+## Wrong Moneydance account
 
-Check the mapping row. Importing into the wrong Moneydance account puts real rows there — delete those unconfirmed downloads (or undo) and map again. Signs follow Moneydance’s usual download converter.
+That is the **Import into** column in this extension (which Moneydance account receives the row), not Lunch Flow’s own account settings.
+
+If a row landed in the wrong register, delete those unconfirmed downloads (or undo) and change **Import into**, then Import again.
+
+## Amounts backwards or dates off
+
+Fix this in **Lunch Flow**, then Import again. The extension does not flip signs or pick dates itself.
+
+- **Signs:** Lunch Flow’s [transaction amounts](https://www.lunchflow.app/docs/guides/configuration/transaction-amounts) page — **Reverse amounts** if spending and income are the wrong way around.
+- **Dates:** in the same Lunch Flow account settings, choose **value** or **book**. Banks do not agree which of those is the authorisation (hold) date and which is the capture or settlement date. Compare a few transactions in Lunch Flow to your bank app and pick the one you want in Moneydance.
+
+See also [Set up Lunch Flow](setup.md#4-optional-how-lunch-flow-formats-each-transaction).
 
 ## The yellow Download button in the register
 
