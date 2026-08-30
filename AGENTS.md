@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Instructions for AI coding agents working in this repository. Humans should start with [README.md](README.md). Product intent lives in [docs/product.md](docs/product.md).
+Instructions for AI coding agents working in this repository. Humans should start with [README.md](README.md) (install and use only — no roadmap or agent-speak). Product intent lives in [docs/product.md](docs/product.md).
 
 ## Current state (read this first)
 

@@ -2,7 +2,7 @@
 
 ## Before writing code
 
-Read [AGENTS.md](AGENTS.md) (especially **Current state**) and [docs/product.md](docs/product.md). The Gradle project already exists. Next work is Phase 4 polish (Help 101, screenshots, cancel, icon) unless the owner asks otherwise. Do not re-scaffold the DevKit layout. Do not implement [docs/review-v19-txn-types.md](docs/review-v19-txn-types.md).
+[README.md](README.md) is for people installing the extension. Keep it free of roadmap phases, agent notes, and “throwaway file” chatter. Developers: read [AGENTS.md](AGENTS.md) (especially **Current state**) and [docs/product.md](docs/product.md). The Gradle project already exists. Next work is Phase 4 polish (Help 101, screenshots, cancel, icon) unless the owner asks otherwise. Do not re-scaffold the DevKit layout. Do not implement [docs/review-v19-txn-types.md](docs/review-v19-txn-types.md).
 
 ## Conventions
 

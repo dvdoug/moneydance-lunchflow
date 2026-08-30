@@ -15,6 +15,7 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ### Changed
 - CI actions: checkout v7, setup-java v6, upload-artifact v7 (Node 24; old v4 majors are deprecated).
+- README rewritten as an install-and-use guide (dev notes live in CONTRIBUTING).
 
 ## 31 - 2026-08-29
 
