@@ -96,6 +96,8 @@ Docs: https://www.lunchflow.app/docs/api/personal-api/getAccountTransactions
 }
 ```
 
+One figure; Lunch Flow lets the user pick pending vs settled. **Do not** write this onto Moneydance ledger/available balances.
+
 Docs: https://www.lunchflow.app/docs/api/personal-api/getAccountBalance
 
 ### `GET /accounts/{accountId}/holdings`

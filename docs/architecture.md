@@ -95,6 +95,8 @@ Pending identity is hidden FITID / `lunchflow.pending` only. Do not prefix Descr
 
 Currency: if Lunch Flow `currency` is set and differs from the Moneydance account’s `CurrencyType.idString`, skip that mapping (hard error).
 
+Do **not** import Lunch Flow `GET /accounts/{id}/balance` into Moneydance `ol.ledgerbal` / `ol.availbal`. Lunch Flow exposes one amount, and the user can choose whether that is pending or settled. Moneydance’s register balance-box “Ledger” / “Available” rows are two bank figures from OFX/Plaid. One LF number cannot fill both, and putting it in either is misleading.
+
 ## Sync algorithm
 
 1. HTTP off the EDT (`SyncService` / `SwingWorker`). Apply download-list writes and `showDownloadedTxns` on the EDT.

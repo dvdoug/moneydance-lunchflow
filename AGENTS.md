@@ -22,13 +22,14 @@ Shipped locally as **`module_build` 45** (`Version.kt`, `meta_info.dict`, and [C
 
 - README / in-app screenshots of the real UI (add under `docs/user/images/` and update when the window changes).
 - Holdings; do not map investment/loan accounts in production advice.
+- Do **not** write Lunch Flow `GET /accounts/{id}/balance` onto Moneydance ledger/available (`ol.ledgerbal` / `ol.availbal`). LF has one user-configurable number (pending vs settled). MD+’s two-line balance box is Plaid ledger + available; stuffing one LF figure into either slot is wrong.
 - Marketplace outreach (Phase 5).
 
 **Dogfood:** throwaway file **Lunch Flow testing**. Owner may also alpha the main file **after a backup**. Agents still must not request production data or keys.
 
 ## What this repo is
 
-A **Moneydance extension** that downloads bank transactions, balances, and (later) investment holdings from the **Lunch Flow Personal API** and imports them into the open Moneydance data file.
+A **Moneydance extension** that downloads bank transactions (and later, if asked, investment holdings) from the **Lunch Flow Personal API** and imports them into the open Moneydance data file.
 
 It is the non-US-friendly analogue of **Moneydance+**: Moneydance+ uses Plaid and is limited to US/Canada; this extension uses Lunch Flow, which already covers banks worldwide. Users still connect banks in Lunch Flow. This extension only pulls data that Lunch Flow already has.
 
