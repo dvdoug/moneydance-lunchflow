@@ -9,8 +9,10 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 45 - 2026-08-31
+
 ### Changed
-- Setup docs note that Lunch Flow bills per bank connection, not per account at that bank.
+- Import skips a mapped account whose Lunch Flow connection is not Active, and tells you to renew it there.
 
 ## 44 - 2026-08-31
 

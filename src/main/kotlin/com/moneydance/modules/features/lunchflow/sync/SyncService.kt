@@ -60,6 +60,13 @@ object SyncService {
                     publish(Progress("fetching $label", (index + 0.35) / n))
                     if (lf == null) {
                         Fetched(mapping, null, null, "${mapping.lunchFlowAccountId} is not enabled for this API key.")
+                    } else if (!lf.isActive) {
+                        Fetched(
+                            mapping,
+                            lf,
+                            null,
+                            "This bank is not Active in Lunch Flow. Renew the connection there, then Import again."
+                        )
                     } else {
                         try {
                             val oldestPending = SyncEngine.oldestOpenPendingDate(book, mapping)

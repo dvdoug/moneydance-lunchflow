@@ -14,6 +14,8 @@ The key only sees accounts enabled under **Account Access** on the API destinati
 
 Open-banking connections often expire (commonly about 90 days). Lunch Flow’s [renewing connections](https://www.lunchflow.app/docs/guides/troubleshooting/renewing-connections) guide is the right place to reconnect. History from months you were not authorised may stay missing. That is a bank/Lunch Flow limit, not an Import error. Posted rows already in Moneydance stay put.
 
+If Import says a bank is **not Active**, renew it in Lunch Flow first. This extension cannot reconnect the bank for you.
+
 ## Pending card holds
 
 This extension asks Lunch Flow for pending transactions. They import as unconfirmed downloads until they post. Lunch Flow’s own [pending](https://www.lunchflow.app/docs/guides/troubleshooting/pending-transactions) page explains why some banks barely expose holds. If a hold never appears, that is usually the bank, not the mapping.

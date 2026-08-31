@@ -98,7 +98,7 @@ Currency: if Lunch Flow `currency` is set and differs from the Moneydance accoun
 ## Sync algorithm
 
 1. HTTP off the EDT (`SyncService` / `SwingWorker`). Apply download-list writes and `showDownloadedTxns` on the EDT.
-2. `GET /accounts/{id}/transactions?include_pending=true&from=&to=` (`to` = today; `from` = min of mapping start, last posted − 7, oldest open hold − 1).
+2. Skip a mapped account whose Lunch Flow `status` is not `ACTIVE` (renew in Lunch Flow). Else `GET /accounts/{id}/transactions?include_pending=true&from=&to=` (`to` = today; `from` = min of mapping start, last posted − 7, oldest open hold − 1).
 3. Skip only FITIDs still on **live register** `ParentTxn`s on that account. Prune download-list rows whose FITID is already on the register.
 4. Posted with a non-null id: skip if FITID known; else `downloaded.newTxn()`, fill, `STATUS_NEW`.
 5. Pending: set-reconcile register parents with our pending FITID prefix (promote unique matches even if already confirmed; delete vanished holds even if confirmed); else add a NEW download.
