@@ -9,6 +9,9 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+### Changed
+- Setup docs note that Lunch Flow bills per bank connection, not per account at that bank.
+
 ## 44 - 2026-08-31
 
 ### Changed

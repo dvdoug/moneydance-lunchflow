@@ -8,6 +8,8 @@ Lunch Flow’s own help is linked below. Their “API destination” page is wri
 
 Lunch Flow’s [QuickStart](https://www.lunchflow.app/docs/guides/get-started/quickstart) covers signing up and connecting a bank. In short: you log in at [lunchflow.app](https://www.lunchflow.app/), add a connection, and complete the bank’s own login (read-only). Lunch Flow never needs your bank password.
 
+Lunch Flow charges **per connection**. A connection is one bank (that login), not each account at the bank. Current and savings at the same bank are one connection; a second bank is another. You still turn on every account you want in Moneydance under Account Access (step 3). Their prices are on the Lunch Flow site and can change.
+
 If you are not sure your bank is covered, see their [bank coverage](https://www.lunchflow.app/docs/guides/connections/bank-coverage) and the regional pages (for example [UK and EU](https://www.lunchflow.app/docs/guides/connections/regions/uk-eu)).
 
 Wait until the connection shows as **Active** and you can see transactions for that account **inside Lunch Flow**. If Lunch Flow does not have the transaction, Moneydance will not get it either.
