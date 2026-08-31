@@ -275,6 +275,11 @@ public final class MdAccess {
         return txn.getDescription();
     }
 
+    public static void setMemo(ParentTxn txn, String memo) {
+        txn.setMemo(memo == null ? "" : memo);
+        txn.syncItem();
+    }
+
     public static int getDateInt(ParentTxn txn) {
         return txn.getDateInt();
     }

@@ -53,7 +53,7 @@ class SyncEngine(
             if (!MdAccess.sameAccount(MdAccess.accountOf(txn), mdAccount)) continue
             val id = MdAccess.registerFiTxnId(txn, FitIds.PROTOCOL)
             if (FitIds.isOurs(id) || FitIds.isPending(id)) {
-                sanitizeOrigPayee(txn)
+                sanitizeLegacyPendingLabel(txn)
             }
             if (FitIds.isPending(id) && id != null) ourPending[id] = txn
         }
@@ -83,16 +83,9 @@ class SyncEngine(
         for (pair in promotions) {
             val existing = ourPending.remove(pair.pendingKey) ?: continue
             val fitId = FitIds.posted(lfAccount.id, pair.posted.id!!)
-            val confirmed = !MdAccess.isNew(existing)
-            MdAccess.setDescription(
-                existing,
-                FitIds.settledDescription(
-                    MdAccess.getDescription(existing).orEmpty(),
-                    pair.posted.payee(),
-                    confirmed
-                )
-            )
-            sanitizeOrigPayee(existing)
+            MdAccess.setDescription(existing, pair.posted.payee())
+            MdAccess.setMemo(existing, pair.posted.memo())
+            sanitizeLegacyPendingLabel(existing)
             MdAccess.clearPendingFlag(existing)
             MdAccess.setRegisterFitId(existing, fitId)
             known.add(fitId)
@@ -134,9 +127,9 @@ class SyncEngine(
         }
 
         finishDownloads(mdAccount)
-        for ((key, txn) in desiredPending) {
+        for ((key, _) in desiredPending) {
             val parent = MdAccess.findByFitId(book, mdAccount, FitIds.PROTOCOL, key) ?: continue
-            labelRegisterPending(parent, txn.payee())
+            tagRegisterPending(parent)
         }
 
         return AccountSyncResult(
@@ -210,18 +203,17 @@ class SyncEngine(
         MdAccess.syncList(downloaded)
     }
 
-    private fun labelRegisterPending(txn: ParentTxn, payee: String) {
-        if (!MdAccess.isNew(txn)) return
-        sanitizeOrigPayee(txn)
-        val current = MdAccess.getDescription(txn).orEmpty()
-        if (!current.startsWith(FitIds.PENDING_LABEL)) {
-            MdAccess.setDescription(txn, FitIds.withPendingLabel(current.ifBlank { payee }))
-        }
+    private fun tagRegisterPending(txn: ParentTxn) {
+        sanitizeLegacyPendingLabel(txn)
         txn.setParameter(FitIds.PARAM_PENDING, true)
         txn.syncItem()
     }
 
-    private fun sanitizeOrigPayee(txn: ParentTxn) {
+    private fun sanitizeLegacyPendingLabel(txn: ParentTxn) {
+        val current = MdAccess.getDescription(txn).orEmpty()
+        if (current.startsWith(FitIds.PENDING_LABEL)) {
+            MdAccess.setDescription(txn, FitIds.stripPendingLabel(current))
+        }
         val orig = txn.getParameter(FitIds.ORIG_PAYEE_TAG, "") ?: return
         if (!orig.startsWith(FitIds.PENDING_LABEL)) return
         txn.setParameter(FitIds.ORIG_PAYEE_TAG, FitIds.stripPendingLabel(orig))

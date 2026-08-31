@@ -18,27 +18,9 @@ class FitIdsTest {
     }
 
     @Test
-    fun pendingLabelIsDisplayOnly() {
+    fun leftoverPendingPrefixStrips() {
         assertEquals("TFL TRAVEL CHARGE", FitIds.stripPendingLabel("TFL TRAVEL CHARGE"))
         assertEquals("TFL TRAVEL CHARGE", FitIds.stripPendingLabel("[PENDING] TFL TRAVEL CHARGE"))
-        assertEquals("[PENDING] TFL TRAVEL CHARGE", FitIds.withPendingLabel("TFL TRAVEL CHARGE"))
-        assertEquals("[PENDING] TFL TRAVEL CHARGE", FitIds.withPendingLabel("[PENDING] TFL TRAVEL CHARGE"))
         assertEquals("ol.orig-payee", FitIds.ORIG_PAYEE_TAG)
-    }
-
-    @Test
-    fun settledDescriptionKeepsConfirmedPayee() {
-        assertEquals(
-            "Tesco",
-            FitIds.settledDescription("[PENDING] Tesco", "TESCO STORES 123", alreadyConfirmed = true)
-        )
-        assertEquals(
-            "TESCO STORES 123",
-            FitIds.settledDescription("[PENDING] Tesco", "TESCO STORES 123", alreadyConfirmed = false)
-        )
-        assertEquals(
-            "Waitrose",
-            FitIds.settledDescription("Waitrose", "WAITROSE 2844", alreadyConfirmed = true)
-        )
     }
 }

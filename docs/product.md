@@ -18,7 +18,7 @@ Ship an unofficial Moneydance extension, authored by **Doug Wright**, that is **
 - User pastes their Lunch Flow **Personal API** key in Settings (never hardcoded).
 - User maps Lunch Flow accounts to Moneydance accounts.
 - User imports (manually, and optionally when the data file opens).
-- **Posted** transactions import once (FITID) via Moneydance’s download converter. **Pending** authorisations appear as `[PENDING]` unconfirmed rows (Description only; merchant matching still runs). If a dropped pending uniquely matches a new posted row on date, merchant, and exact amount, **update that row in place** — including if the user already confirmed the blue dot. Otherwise **delete that Lunch Flow hold** (even if confirmed) and add the posted **download**. Reminder or typed rows are left for Merge.
+- **Posted** transactions import once (FITID) via Moneydance’s download converter. **Pending** authorisations import as unconfirmed rows. If a dropped pending uniquely matches a new posted row on date, merchant, and exact amount, **update that row in place** (posted payee/memo) — including if the user already confirmed the blue dot. Otherwise **delete that Lunch Flow hold** (even if confirmed) and add the posted **download**. Reminder or typed rows are left for Merge.
 - Quality is high enough to list in **both** the Moneydance extension directory and Lunch Flow’s destination list.
 
 ## What “functionally equivalent to Moneydance+” means here
@@ -51,7 +51,7 @@ The in-app **Setup guide** opens [docs/user/setup.md](user/setup.md). That hub m
 4. Paste key → **Save key** → **Refresh accounts**. On success, we list accounts. (Refresh is the connection test.)
 5. Map each Lunch Flow account (`name`, `institution_name`, `currency`) to a Moneydance **bank or credit-card** account. Do not map investment/loan yet.
 6. Choose a **From** date (default: first of the current month; blank = all history Lunch Flow has). After a successful import, From becomes `max(current From, last posted − 7 days)` — it never moves earlier than you set. Type an older date to backfill again.
-7. **Import**. Mappings also save when the window closes. New rows appear as **unconfirmed downloaded transactions** (solid blue dot). Confirm or merge them in the register the same way as OFX. Pending holds are `[PENDING]` until they post or vanish.
+7. **Import**. Mappings also save when the window closes. New rows appear as **unconfirmed downloaded transactions** (solid blue dot). Confirm or merge them in the register the same way as OFX. Pending holds use the same Confirm path; they stay our rows until they post or vanish.
 8. Later imports (including auto on open) fetch last posted − 7 days, or back to any still-open hold if older, and **always refresh pending in that window**. FITIDs skip anything already in the register.
 
 ## Success criteria

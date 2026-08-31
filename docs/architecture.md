@@ -85,13 +85,13 @@ Null Lunch Flow pending ids use `synth:{sha256(date, amount, currency, merchant,
 
 Pending set-reconcile applies to register `ParentTxn`s we tagged with `lunchflow:pending:` — including rows the user already **confirmed** to clear the blue dot. Confirm is not a do-not-touch barrier for *our* holds. Never delete reminder/typed rows or posted `lunchflow:` FITIDs. Never follow a split onto another account’s parent. Never treat “all uncleared register rows” as pending.
 
-Pending → posted, **unique** match (exact amount, merchant case-insensitive, date within 7 days, 1:1): retarget that parent to the posted FITID, clear `lunchflow.pending`, drop `[PENDING] `. Unconfirmed also take the settled payee; confirmed keep the user’s Description minus our label. Ambiguous, amount-changed, or vanished: `deleteItem` that pending parent (confirmed or not) and add a posted download when Lunch Flow has one. Auth £100 / capture £95 must not leave both amounts in the register.
+Pending → posted, **unique** match (exact amount, merchant case-insensitive, date within 7 days, 1:1): retarget that parent to the posted FITID, clear `lunchflow.pending`, write the posted payee and memo. Ambiguous, amount-changed, or vanished: `deleteItem` that pending parent (confirmed or not) and add a posted download when Lunch Flow has one. Auth £100 / capture £95 must not leave both amounts in the register.
 
 ## First import window
 
 Per mapping, **sync start date** (`YYYY-MM-DD`). Default: first day of the current month. Blank = all history Lunch Flow will return **for this run**. Fetch from = min(From, lastPosted − 7 days, oldest open lunchflow:pending: date − 1 day). Seven days covers late posted clearing (timezone, weekend, holiday), not card-auth life; live holds keep the window open for as long as they sit. After a successful import, persist `syncStartDate = max(current From, lastPosted − 7)` so From only moves **forward**. A January backfill then walks up to last posted − 7. Typing an older From and clicking Import still backfills. `include_pending=true`.
 
-Unconfirmed pending rows get a `[PENDING] ` **Description** prefix after `showDownloadedTxns`, so they stay visible in the register. `OnlineTxn.setName` and `ol.orig-payee` stay the raw merchant — Moneydance’s similar-payee matcher is prefix/suffix on that tag, and `[PENDING] ` at the front zeros the prefix score. Hidden FITID / `lunchflow.pending` remain the source of truth. Description prefix is stripped on promote to posted; a leftover `[PENDING] ` on `ol.orig-payee` is stripped on our FITIDs at import.
+Pending identity is hidden FITID / `lunchflow.pending` only. Do not prefix Description with `[PENDING] `. `OnlineTxn.setName` and `ol.orig-payee` stay the raw merchant for similar-payee matching. A leftover `[PENDING] ` on Description or `ol.orig-payee` from older builds is stripped on our FITIDs at import.
 
 Currency: if Lunch Flow `currency` is set and differs from the Moneydance account’s `CurrencyType.idString`, skip that mapping (hard error).
 

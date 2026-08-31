@@ -42,7 +42,7 @@ New rows appear in the Moneydance register as **unconfirmed downloads** (a solid
 - **Confirm** keeps the new row.
 - **Merge** combines it with a matching row you already typed.
 
-Pending card holds show with a `[PENDING]` prefix on the Description until they settle. You can Confirm the blue dot while it is still a hold. When it posts for the same amount, a later Import updates that same row. If the settled amount is different, Import removes the hold and brings in the posted amount as a new download (so you are not left with both). Category matching still uses the merchant, same as a posted row.
+Pending card holds appear as ordinary unconfirmed downloads (blue dot). You can Confirm the blue dot while it is still a hold. When it posts for the same amount, a later Import updates that same row (including the Description). If the settled amount is different, Import removes the hold and brings in the posted amount as a new download (so you are not left with both).
 
 If you already typed the spend (or a reminder created it), **Merge** the download into that row. Moneydance keeps your original Description.
 

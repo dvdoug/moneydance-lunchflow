@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 44 - 2026-08-31
+
+### Changed
+- Pending holds no longer get a `[PENDING]` prefix on Description. Unique settle still retargets that row and writes the posted payee and memo. Leftover prefixes from earlier builds are stripped on the next Import.
+
 ## 43 - 2026-08-30
 
 ### Changed
