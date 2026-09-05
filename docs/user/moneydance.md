@@ -26,7 +26,7 @@ You should see one row per Lunch Flow account that Account Access allows. Saved 
 Each Lunch Flow row has a Moneydance account menu and a **From** date.
 
 - Map only **bank** or **credit card** accounts for now (not investments or loans).
-- **From** is how far back the *next* Import asks Lunch Flow to look. It uses the same date format as the rest of Moneydance (click the cell for a calendar).
+- **From** is how far back the *next* Import asks Lunch Flow to look.
   - Default for a new mapping is the first day of this month.
   - Clear the date (so it shows **All history**) for as much history as Lunch Flow still has (often about 90 days, depending on the bank).
   - After a successful Import, From only moves **forward** (it will not jump to an older date than you set). Later Imports then use about a week of overlap, or longer while a card hold is still open. Pick an older date any time you want a longer backfill.

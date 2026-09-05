@@ -51,7 +51,7 @@ class AccountMappingPanel(
         add(JScrollPane(table), BorderLayout.CENTER)
         add(
             JTextArea().apply {
-                text = "From uses your Moneydance date format (click for a calendar). Clear it for all history Lunch Flow has.\n" +
+                text = "Clear From for all history Lunch Flow has.\n" +
                     "Missing a bank? Enable it in Lunch Flow under Destinations → Account Access, then Refresh accounts."
                 isEditable = false
                 lineWrap = true
