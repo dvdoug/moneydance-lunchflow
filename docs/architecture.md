@@ -58,7 +58,7 @@ Per **data file**, not per machine:
 - API key
 - Account mappings (`lunchFlowAccountId` → Moneydance account UUID)
 - Per-mapping `syncStartDate`, `lastPostedDate`
-- Automatically import on file open (`lunchflow.importOnOpen`, default off)
+- Automatically import (`lunchflow.importOnOpen`, default off): ~1.8s after file open, then every 30 minutes while Moneydance stays open. Lunch Flow does not publish a Personal API rate cap; this interval is 48 cycles/day plus one `GET /accounts` and one transactions GET per mapped account.
 
 Cleared status follows Moneydance **Mark Transactions as Cleared When Confirmed**, not our import code.
 

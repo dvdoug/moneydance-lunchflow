@@ -21,6 +21,8 @@ Platform API docs exist at `/docs/api/platform-api-overview`. Do not call those 
 
 (`https://lunchflow.app/api/v1` 308-redirects here. Java `HttpClient` defaults to **not** following redirects; we follow `NORMAL` and call `www` directly.)
 
+Lunch Flow’s Personal API docs do not publish a numeric rate limit. Destinations such as monetr poll on the order of hours, not seconds. This extension’s automatic import is at most once per 30 minutes plus an on-open run.
+
 **Auth:** every request
 
 ```http

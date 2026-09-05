@@ -81,14 +81,20 @@ class Main : FeatureModule() {
         created.onGoneAway = {
             if (window === created) window = null
         }
+        created.onAutomaticImportChanged = { enabled ->
+            if (enabled) scheduleAutoImport() else cancelAutoImport()
+        }
         window = created
         created.bringToFront()
     }
 
     private fun scheduleAutoImport() {
         cancelAutoImport()
-        val timer = Timer(1800) { runAutoImport() }
-        timer.isRepeats = false
+        val store = SettingsStore.fromBook(getContext()?.currentAccountBook) ?: return
+        if (!store.importOnOpen()) return
+        val timer = Timer(AUTO_IMPORT_REPEAT_MS) { runAutoImport() }
+        timer.initialDelay = AUTO_IMPORT_FIRST_DELAY_MS
+        timer.isRepeats = true
         openTimer = timer
         timer.start()
     }
@@ -103,15 +109,13 @@ class Main : FeatureModule() {
         val book = getContext()?.currentAccountBook ?: return
         val store = SettingsStore.fromBook(book) ?: return
         if (!store.importOnOpen()) {
-            MdNotify.log("skip import (disabled for this file)")
+            cancelAutoImport()
             return
         }
         val key = store.apiKey()
-        if (key.isNullOrEmpty()) {
-            MdNotify.log("skip import (no API key)")
-            return
-        }
+        if (key.isNullOrEmpty()) return
         val maps = store.mappings()
+        if (maps.none { it.moneydanceAccountUuid.isNotBlank() }) return
         SyncService.start(
             book = book,
             settings = store,
@@ -148,5 +152,8 @@ class Main : FeatureModule() {
 
         const val THIRD_PARTY_DISCLAIMER: String =
             "Unofficial extension by Doug Wright. Lunch Flow is a separate third-party service."
+
+        private const val AUTO_IMPORT_FIRST_DELAY_MS: Int = 1_800
+        private const val AUTO_IMPORT_REPEAT_MS: Int = 30 * 60 * 1_000
     }
 }

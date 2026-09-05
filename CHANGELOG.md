@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 48 - 2026-09-05
+
+### Changed
+- **Automatically import** runs shortly after the file opens, then every 30 minutes while Moneydance stays open.
+
 ## 47 - 2026-09-05
 
 ### Changed

@@ -34,7 +34,8 @@ class LunchFlowWindow(
     private val mdGUI: MoneydanceGUI,
     private val book: AccountBook?,
     private val settings: SettingsStore?,
-    var onGoneAway: (() -> Unit)? = null
+    var onGoneAway: (() -> Unit)? = null,
+    var onAutomaticImportChanged: ((Boolean) -> Unit)? = null
 ) : SecondaryDialog(mdGUI, mdGUI.getTopLevelFrame(), "Lunch Flow", false) {
 
     private val keyField = JPasswordField()
@@ -79,6 +80,7 @@ class LunchFlowWindow(
             val on = importOnOpenBox.isSelected
             settings?.setImportOnOpen(on)
             MdNotify.log(if (on) "automatic import enabled" else "automatic import disabled")
+            onAutomaticImportChanged?.invoke(on)
         }
 
         setBusyButtons(true)

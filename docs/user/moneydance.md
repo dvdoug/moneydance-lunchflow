@@ -48,7 +48,7 @@ If you already typed the spend (or a reminder created it), **Merge** the downloa
 
 The bottom status bar shows progress. More detail is in **Help → Console Window** (lines starting `lunchflow:`). The API key is never written there.
 
-**Automatically import** is **off** until you tick it. Tick it only after mappings look right.
+**Automatically import** is **off** until you tick it. Tick it only after mappings look right. While it is on, Import runs shortly after this file opens, then every 30 minutes for as long as Moneydance stays open.
 
 ## Next
 
