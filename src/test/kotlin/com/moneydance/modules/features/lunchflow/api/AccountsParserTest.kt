@@ -32,4 +32,18 @@ class AccountsParserTest {
             AccountsParser.parse("""{"accounts":[{"name":"No id"}]}""")
         }
     }
+
+    @Test
+    fun errorEnvelopeIsParseError() {
+        assertFailsWith<LunchFlowException.Parse> {
+            AccountsParser.parse("""{"error":"Unauthorized"}""")
+        }
+    }
+
+    @Test
+    fun emptyObjectIsParseError() {
+        assertFailsWith<LunchFlowException.Parse> {
+            AccountsParser.parse("{}")
+        }
+    }
 }

@@ -297,6 +297,12 @@ class LunchFlowWindow(
             setStatus("Paste an API key first.")
             return
         }
+        val typed = typedKey()
+        if (typed.isNotEmpty()) {
+            store.setApiKey(typed)
+            keyField.text = ""
+            refreshSavedLabel()
+        }
         val maps = saveMappings("Saving mappings…")
         SyncService.start(
             book = openBook,

@@ -132,7 +132,7 @@ class SyncEngine(
             pendingRemoved++
         }
 
-        finishDownloads(mdAccount)
+        finishDownloads(mdAccount, postedAdded + pendingAdded > 0)
         for ((key, _) in desiredPending) {
             val parent = MdAccess.findByFitId(book, mdAccount, FitIds.PROTOCOL, key) ?: continue
             tagRegisterPending(parent)
@@ -183,13 +183,13 @@ class SyncEngine(
         )
     }
 
-    private fun finishDownloads(account: Account) {
+    private fun finishDownloads(account: Account, addedDownloads: Boolean) {
         val downloaded = MdAccess.downloadedTxns(account) ?: return
         MdAccess.sortTxns(downloaded)
         MdAccess.syncList(downloaded)
         MdAccess.notifyDownloaded(downloaded)
         MdAccess.downloadedUpdated(account)
-        processDownloaded(account)
+        if (addedDownloads) processDownloaded(account)
     }
 
     private fun pruneStaleDownloads(account: Account, registerIds: Set<String>) {
@@ -198,7 +198,8 @@ class SyncEngine(
         for (i in 0 until MdAccess.txnCount(downloaded)) {
             val row = MdAccess.txnAt(downloaded, i) ?: continue
             val fitId = MdAccess.fiTxnId(row)
-            if (fitId.isNullOrBlank() || fitId in registerIds || MdAccess.isAcceptedDownload(row)) {
+            if (!FitIds.isOurs(fitId)) continue
+            if (fitId in registerIds || MdAccess.isAcceptedDownload(row)) {
                 toRemove.add(row)
             }
         }
@@ -213,6 +214,7 @@ class SyncEngine(
         var changed = false
         for (i in 0 until MdAccess.txnCount(downloaded)) {
             val row = MdAccess.txnAt(downloaded, i) ?: continue
+            if (!FitIds.isOurs(MdAccess.fiTxnId(row))) continue
             val name = MdAccess.getName(row) ?: continue
             if (!name.startsWith(FitIds.PENDING_LABEL)) continue
             val clean = FitIds.stripPendingLabel(name)

@@ -11,12 +11,20 @@ import com.moneydance.modules.features.lunchflow.settings.SettingsStore
 import com.moneydance.modules.features.lunchflow.ui.ImportStatus
 import com.moneydance.modules.features.lunchflow.ui.MdNotify
 import java.time.LocalDate
+import java.util.concurrent.atomic.AtomicInteger
 import javax.swing.SwingWorker
 
 object SyncService {
     @Volatile
     var inFlight: Boolean = false
         private set
+
+    private val runId = AtomicInteger(0)
+
+    fun discardInFlight() {
+        runId.incrementAndGet()
+        inFlight = false
+    }
 
     fun start(
         book: AccountBook,
@@ -39,6 +47,7 @@ object SyncService {
             onStatus("Choose a Moneydance account for at least one row.")
             return false
         }
+        val id = runId.incrementAndGet()
         inFlight = true
         onBusy(true)
         val n = mapped.size
@@ -47,12 +56,18 @@ object SyncService {
         onStatus("Importing…")
 
         object : SwingWorker<FetchBundle, Progress>() {
+            private fun superseded(): Boolean = id != runId.get()
+
             override fun doInBackground(): FetchBundle {
                 val client = LunchFlowClient(key)
                 val accounts = client.listAccounts()
+                if (superseded()) return FetchBundle(emptyList(), emptyList())
                 val byId = accounts.associateBy { it.id }
                 val today = LocalDate.now().toString()
                 val fetched = mapped.mapIndexed { index, mapping ->
+                    if (superseded()) {
+                        return FetchBundle(accounts, emptyList())
+                    }
                     val lf = byId[mapping.lunchFlowAccountId]
                     val label = lf?.name ?: "account ${mapping.lunchFlowAccountId}"
                     publish(Progress("fetching $label", (index + 0.35) / n))
@@ -81,6 +96,7 @@ object SyncService {
             }
 
             override fun process(chunks: List<Progress>) {
+                if (superseded()) return
                 val last = chunks.last()
                 MdNotify.bar(gui, last.text, last.progress.coerceIn(0.02, 0.9))
                 onStatus(last.text.replaceFirstChar { it.uppercase() } + "…")
@@ -89,16 +105,23 @@ object SyncService {
             override fun done() {
                 try {
                     val bundle = get()
+                    if (superseded()) {
+                        MdNotify.log("import discarded (file closed)")
+                        return
+                    }
                     applyFetched(book, settings, gui, bundle, onStatus, onAccounts, onMappings)
                 } catch (e: Exception) {
+                    if (superseded()) return
                     val cause = e.cause ?: e
                     val msg = cause.message ?: "Import failed."
                     MdNotify.log("import failed: ${cause.javaClass.simpleName}: $msg", cause)
                     MdNotify.bar(gui, msg, 0.0)
                     onStatus(msg)
                 } finally {
-                    inFlight = false
-                    onBusy(false)
+                    if (id == runId.get()) {
+                        inFlight = false
+                        onBusy(false)
+                    }
                 }
             }
         }.execute()

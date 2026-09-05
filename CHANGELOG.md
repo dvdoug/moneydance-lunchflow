@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 51 - 2026-09-05
+
+### Fixed
+- Blank From stays blank when the window opens. Mappings missing from this Refresh are kept. Closing the file discards an in-flight import. A JSON error body is a failure. Download prune only touches Lunch Flow rows. Paste-and-Import saves the API key.
+
 ## 50 - 2026-09-05
 
 ### Fixed

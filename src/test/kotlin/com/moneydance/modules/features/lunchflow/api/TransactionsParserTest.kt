@@ -2,6 +2,7 @@ package com.moneydance.modules.features.lunchflow.api
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -19,5 +20,19 @@ class TransactionsParserTest {
         assertEquals("Latte", txns[0].memo())
         assertNull(txns[1].id)
         assertTrue(txns[1].isPending)
+    }
+
+    @Test
+    fun errorEnvelopeIsParseError() {
+        assertFailsWith<LunchFlowException.Parse> {
+            TransactionsParser.parse("""{"error":"nope"}""")
+        }
+    }
+
+    @Test
+    fun emptyObjectIsParseError() {
+        assertFailsWith<LunchFlowException.Parse> {
+            TransactionsParser.parse("{}")
+        }
     }
 }

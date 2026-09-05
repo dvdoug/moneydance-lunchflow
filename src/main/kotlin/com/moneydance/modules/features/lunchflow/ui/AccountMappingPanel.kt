@@ -91,7 +91,7 @@ class AccountMappingPanel(
                     MappingRow(
                         lf = lf,
                         mdUuid = existing?.moneydanceAccountUuid,
-                        startDate = existing?.syncStartDate ?: AccountMapping.defaultStartDate()
+                        startDate = AccountMapping.fromDateForRow(existing)
                     )
                 )
             }
@@ -99,7 +99,7 @@ class AccountMappingPanel(
         }
 
         fun collect(saved: List<AccountMapping>): List<AccountMapping> {
-            return rows.mapNotNull { row ->
+            val fromTable = rows.mapNotNull { row ->
                 val uuid = row.mdUuid ?: return@mapNotNull null
                 AccountMapping(
                     lunchFlowAccountId = row.lf.id,
@@ -110,6 +110,7 @@ class AccountMappingPanel(
                     institutionName = row.lf.institutionName.takeIf { it.isNotBlank() }
                 )
             }
+            return AccountMapping.keepUnlisted(fromTable, saved, rows.map { it.lf.id }.toSet())
         }
 
         override fun getRowCount(): Int = rows.size

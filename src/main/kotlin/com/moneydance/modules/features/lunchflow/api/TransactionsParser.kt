@@ -2,8 +2,8 @@ package com.moneydance.modules.features.lunchflow.api
 
 internal object TransactionsParser {
     fun parse(body: String): List<LunchFlowTransaction> {
-        val root = parseJson(body).obj()
-        val rows = root["transactions"]?.arr() ?: emptyList()
+        val root = parseJson(body).requireObj("transactions response")
+        val rows = root.requireArr("transactions")
         return rows.mapIndexed { index, row ->
             val o = row.obj()
             val accountId = o.long("accountId")

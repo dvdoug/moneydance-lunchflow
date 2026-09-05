@@ -14,7 +14,7 @@ Requires Moneydance 2024 or newer. Installing a newer file with the same id repl
 
 1. **Extensions → Lunch Flow**.
 2. Paste the API key into **API key**.
-3. Click **Save key**.
+3. Click **Save key** (or **Import** — that also saves a key you just pasted).
 4. Click **Refresh accounts**.
 
 You should see one row per Lunch Flow account that Account Access allows. Saved mappings appear as soon as the window opens; **Refresh accounts** updates names from Lunch Flow. If the list is too short after a refresh, go back to [Account Access](setup.md#3-turn-on-account-access-for-each-account).
@@ -31,7 +31,7 @@ Each Lunch Flow row has a Moneydance account menu and a **From** date.
   - Clear the date (so it shows **All history**) for as much history as Lunch Flow still has (often about 90 days, depending on the bank).
   - After a successful Import, From only moves **forward** (it will not jump to an older date than you set). Later Imports then use about a week of overlap, or longer while a card hold is still open. Pick an older date any time you want a longer backfill.
 
-Mappings are saved when you **Import** or when you close the window (the X, Alt+F4, Escape, or Close). There is no separate Save button.
+Mappings are saved when you **Import** or when you close the window (the X, Alt+F4, Escape, or Close). There is no separate Save button. A Refresh that does not list an account you already mapped does not forget that mapping.
 
 ## Import
 

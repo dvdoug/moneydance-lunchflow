@@ -50,6 +50,7 @@ class Main : FeatureModule() {
                 appEvent.equals("md:file:closed", ignoreCase = true) ->
                 SwingUtilities.invokeLater {
                     cancelAutoImport()
+                    SyncService.discardInFlight()
                     closeWindow()
                 }
         }
@@ -61,6 +62,7 @@ class Main : FeatureModule() {
 
     override fun unload() {
         cancelAutoImport()
+        SyncService.discardInFlight()
         closeWindow()
     }
 

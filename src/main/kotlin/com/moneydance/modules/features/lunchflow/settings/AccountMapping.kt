@@ -10,7 +10,7 @@ import java.time.ZoneId
 data class AccountMapping(
     val lunchFlowAccountId: Long,
     val moneydanceAccountUuid: String,
-    val syncStartDate: String? = defaultStartDate(),
+    val syncStartDate: String? = null,
     val lastPostedDate: String? = null,
     val lunchFlowName: String? = null,
     val institutionName: String? = null
@@ -40,6 +40,14 @@ data class AccountMapping(
     companion object {
         fun defaultStartDate(): String =
             YearMonth.now(ZoneId.systemDefault()).atDay(1).toString()
+
+        fun fromDateForRow(existing: AccountMapping?): String? =
+            if (existing == null) defaultStartDate() else existing.syncStartDate
+
+        fun keepUnlisted(fromTable: List<AccountMapping>, saved: List<AccountMapping>, visibleIds: Set<Long>): List<AccountMapping> {
+            val kept = saved.filter { it.lunchFlowAccountId !in visibleIds && it.moneydanceAccountUuid.isNotBlank() }
+            return fromTable + kept
+        }
 
         fun plusDays(isoDate: String, days: Long): String =
             LocalDate.parse(isoDate).plusDays(days).toString()
