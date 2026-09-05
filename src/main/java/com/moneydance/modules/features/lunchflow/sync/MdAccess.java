@@ -90,7 +90,6 @@ public final class MdAccess {
         String name,
         String memo,
         String fitId,
-        boolean pending,
         String isoCurrency
     ) {
         OnlineTxnList list = account.getDownloadedTxns();
@@ -104,7 +103,6 @@ public final class MdAccess {
         txn.setMemo(memo == null ? "" : memo);
         txn.setDatePostedInt(dateInt);
         txn.setDateInitiatedInt(dateInt);
-        txn.setPending(pending);
         txn.setLocalStatus(OnlineTxn.STATUS_NEW);
         if (isoCurrency != null && !isoCurrency.isEmpty()) {
             txn.setISOCurrencyCode(isoCurrency);
@@ -115,25 +113,6 @@ public final class MdAccess {
     public static String registerFiTxnId(AbstractTxn txn, int protocol) {
         ParentTxn parent = txn instanceof ParentTxn ? (ParentTxn) txn : txn.getParentTxn();
         return parent.getFiTxnId(protocol);
-    }
-
-    public static ParentTxn findByFitId(AccountBook book, Account account, int protocol, String fitId) {
-        if (fitId == null || fitId.isEmpty()) {
-            return null;
-        }
-        for (AbstractTxn txn : book.getTransactionSet().getTransactionsForAccount(account)) {
-            if (!(txn instanceof ParentTxn)) {
-                continue;
-            }
-            ParentTxn parent = (ParentTxn) txn;
-            if (!sameAccount(parent.getAccount(), account)) {
-                continue;
-            }
-            if (fitId.equals(parent.getFiTxnId(protocol))) {
-                return parent;
-            }
-        }
-        return null;
     }
 
     public static Account accountOf(ParentTxn txn) {
@@ -168,7 +147,6 @@ public final class MdAccess {
         txn.setEditingMode();
         txn.setDescription(description == null ? "" : description);
         txn.setMemo(memo == null ? "" : memo);
-        txn.removeParameter("lunchflow.pending");
         txn.setFiTxnId(OnlineTxn.PROTO_TYPE_OFX, fitId);
         txn.syncItem();
     }

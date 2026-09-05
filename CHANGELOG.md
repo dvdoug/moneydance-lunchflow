@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 54 - 2026-09-05
+
+### Removed
+- Unused pending flags that neither this extension nor Moneydance’s converter read.
+
 ## 53 - 2026-09-05
 
 ### Removed

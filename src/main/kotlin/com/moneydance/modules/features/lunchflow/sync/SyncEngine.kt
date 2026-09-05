@@ -94,7 +94,7 @@ class SyncEngine(
                 latestPosted = maxDate(latestPosted, txn.date)
                 continue
             }
-            addDownloadTxn(mdAccount, txn, fitId, pending = false)
+            addDownloadTxn(mdAccount, txn, fitId)
             known.add(fitId)
             postedAdded++
             latestPosted = maxDate(latestPosted, txn.date)
@@ -111,7 +111,7 @@ class SyncEngine(
             } else if (key in known) {
                 pendingUpdated++
             } else {
-                addDownloadTxn(mdAccount, txn, key, pending = true)
+                addDownloadTxn(mdAccount, txn, key)
                 known.add(key)
                 pendingAdded++
             }
@@ -124,10 +124,6 @@ class SyncEngine(
         }
 
         finishDownloads(mdAccount, postedAdded + pendingAdded > 0)
-        for ((key, _) in desiredPending) {
-            val parent = MdAccess.findByFitId(book, mdAccount, FitIds.PROTOCOL, key) ?: continue
-            tagRegisterPending(parent)
-        }
 
         return AccountSyncResult(
             postedAdded = postedAdded,
@@ -158,8 +154,7 @@ class SyncEngine(
     private fun addDownloadTxn(
         account: Account,
         txn: LunchFlowTransaction,
-        fitId: String,
-        pending: Boolean
+        fitId: String
     ) {
         MdAccess.addDownload(
             account,
@@ -168,7 +163,6 @@ class SyncEngine(
             txn.payee(),
             txn.memo(),
             fitId,
-            pending,
             MdAccess.currencyId(account)
         )
     }
@@ -197,11 +191,6 @@ class SyncEngine(
         toRemove.forEach { MdAccess.removeTxn(downloaded, it) }
         MdAccess.syncList(downloaded)
         MdAccess.downloadedUpdated(account)
-    }
-
-    private fun tagRegisterPending(txn: ParentTxn) {
-        txn.setParameter(FitIds.PARAM_PENDING, true)
-        txn.syncItem()
     }
 
     private fun collectRegisterFitIds(account: Account): MutableSet<String> {

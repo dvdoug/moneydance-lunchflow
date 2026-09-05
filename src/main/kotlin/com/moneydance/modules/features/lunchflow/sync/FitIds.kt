@@ -6,7 +6,6 @@ import java.security.MessageDigest
 
 object FitIds {
     const val PROTOCOL: Int = OnlineTxn.PROTO_TYPE_OFX
-    const val PARAM_PENDING: String = "lunchflow.pending"
     const val PREFIX_POSTED: String = "lunchflow:"
     const val PREFIX_PENDING: String = "lunchflow:pending:"
 

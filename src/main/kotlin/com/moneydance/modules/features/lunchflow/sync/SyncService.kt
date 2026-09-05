@@ -137,6 +137,7 @@ object SyncService {
         onAccounts: (List<LunchFlowAccount>) -> Unit,
         onMappings: (List<AccountMapping>) -> Unit
     ) {
+        // Converts OnlineTxns to unconfirmed register rows. The name is misleading: it does not show a window.
         val engine = SyncEngine(book) { account -> gui.showDownloadedTxns(account) }
         val updated = mutableListOf<AccountMapping>()
         val results = mutableListOf<AccountSyncResult>()

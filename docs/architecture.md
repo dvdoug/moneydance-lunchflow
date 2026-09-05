@@ -78,8 +78,6 @@ Hidden metadata (not user Keywords):
 | --- | --- | --- |
 | FITID `lunchflow:{accountId}:{txnId}` | `OnlineTxn.setFITxnId` / `AbstractTxn.setFiTxnId(PROTO_TYPE_OFX, …)` | Posted identity; skip + merge |
 | FITID `lunchflow:pending:{accountId}:{id-or-synth}` | same | Pending identity |
-| `OnlineTxn.setPending(true)` | downloaded row | Staging flag |
-| `lunchflow.pending` = `true` | `ParentTxn.setParameter` after convert | Cheap filter on the register row |
 
 Null Lunch Flow pending ids use `synth:{sha256(date, amount, currency, merchant, description).take(16)}`.
 
@@ -87,13 +85,13 @@ Pending set-reconcile applies to register `ParentTxn`s we tagged with `lunchflow
 
 Same pending FITID still in Lunch Flow: if the **amount** changed, rewrite that parent (one category split only; keep the register’s existing sign; Description/memo from the current Lunch Flow txn). Description-only changes wait until settle.
 
-Pending → posted, **unique** match (exact amount, merchant case-insensitive, date within 7 days, 1:1): retarget that parent to the posted FITID, clear `lunchflow.pending`, write the posted payee and memo. Ambiguous, amount-changed at capture, or vanished: `deleteItem` that pending parent (confirmed or not) and add a posted download when Lunch Flow has one. Auth £100 / capture £95 with no still-pending id must not leave both amounts in the register.
+Pending → posted, **unique** match (exact amount, merchant case-insensitive, date within 7 days, 1:1): retarget that parent to the posted FITID, write the posted payee and memo. Ambiguous, amount-changed at capture, or vanished: `deleteItem` that pending parent (confirmed or not) and add a posted download when Lunch Flow has one. Auth £100 / capture £95 with no still-pending id must not leave both amounts in the register.
 
 ## First import window
 
 Per mapping, **sync start date** (`YYYY-MM-DD`). Default for a **new** mapping row: first day of the current month. Blank in storage stays blank when the window opens (all history Lunch Flow will return **for this run**). Fetch from = min(From, lastPosted − 7 days, oldest open lunchflow:pending: date − 1 day). Seven days covers late posted clearing (timezone, weekend, holiday), not card-auth life; live holds keep the window open for as long as they sit. After a successful import, persist `syncStartDate = max(current From, lastPosted − 7)` so From only moves **forward**. A January backfill then walks up to last posted − 7. Typing an older From and clicking Import still backfills. `include_pending=true`.
 
-Pending identity is hidden FITID / `lunchflow.pending` only. `OnlineTxn.setName` stays the raw merchant for similar-payee matching.
+Pending identity is the `lunchflow:pending:` FITID prefix only. `OnlineTxn.setName` stays the raw merchant for similar-payee matching.
 
 Currency: if Lunch Flow `currency` is set and differs from the Moneydance account’s `CurrencyType.idString`, skip that mapping (hard error).
 
