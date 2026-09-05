@@ -76,6 +76,30 @@ class ImportStatusTest {
     }
 
     @Test
+    fun pendingAmountUpdated() {
+        assertEquals(
+            "Lloyds: 1 pending hold updated.",
+            ImportStatus.line("Lloyds", AccountSyncResult(pendingAdjusted = 1))
+        )
+    }
+
+    @Test
+    fun pendingUpdatedAndStillOpen() {
+        assertEquals(
+            "Lloyds: 1 pending hold updated. 2 pending holds still open.",
+            ImportStatus.line("Lloyds", AccountSyncResult(pendingAdjusted = 1, pendingUpdated = 2))
+        )
+    }
+
+    @Test
+    fun overallPendingUpdated() {
+        assertEquals(
+            "1 pending hold updated",
+            ImportStatus.overall(listOf(AccountSyncResult(pendingAdjusted = 1)))
+        )
+    }
+
+    @Test
     fun errorWins() {
         assertEquals(
             "Current: Currency mismatch: Lunch Flow EUR vs Moneydance GBP.",

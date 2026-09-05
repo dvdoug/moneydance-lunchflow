@@ -25,6 +25,9 @@ object ImportStatus {
         if (result.pendingRemoved > 0) {
             parts.add("${n(result.pendingRemoved, "pending hold")} dropped")
         }
+        if (result.pendingAdjusted > 0) {
+            parts.add("${n(result.pendingAdjusted, "pending hold")} updated")
+        }
 
         val stillOpen = result.pendingUpdated
         if (parts.isEmpty()) {
@@ -45,6 +48,7 @@ object ImportStatus {
         val errors = results.count { it.error != null }
         val added = results.sumOf { it.postedAdded + it.pendingAdded }
         val promoted = results.sumOf { it.pendingPromoted }
+        val adjusted = results.sumOf { it.pendingAdjusted }
         return when {
             errors > 0 && added == 0 -> "finished with ${n(errors, "error")}"
             errors > 0 -> "imported ${n(added, "new transaction")}; ${n(errors, "error")}"
@@ -52,6 +56,7 @@ object ImportStatus {
                 "imported ${n(added, "new transaction")}. ${n(promoted, "pending hold")} settled"
             added > 0 -> "imported ${n(added, "new transaction")}"
             promoted > 0 -> "${n(promoted, "pending hold")} settled"
+            adjusted > 0 -> "${n(adjusted, "pending hold")} updated"
             else -> "up to date"
         }
     }

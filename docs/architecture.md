@@ -85,7 +85,9 @@ Null Lunch Flow pending ids use `synth:{sha256(date, amount, currency, merchant,
 
 Pending set-reconcile applies to register `ParentTxn`s we tagged with `lunchflow:pending:` — including rows the user already **confirmed** to clear the blue dot. Confirm is not a do-not-touch barrier for *our* holds. Never delete reminder/typed rows or posted `lunchflow:` FITIDs. Never follow a split onto another account’s parent. Never treat “all uncleared register rows” as pending.
 
-Pending → posted, **unique** match (exact amount, merchant case-insensitive, date within 7 days, 1:1): retarget that parent to the posted FITID, clear `lunchflow.pending`, write the posted payee and memo. Ambiguous, amount-changed, or vanished: `deleteItem` that pending parent (confirmed or not) and add a posted download when Lunch Flow has one. Auth £100 / capture £95 must not leave both amounts in the register.
+Same pending FITID still in Lunch Flow: if the **amount** changed, rewrite that parent (one category split only; keep the register’s existing sign; Description/memo from the current Lunch Flow txn). Description-only changes wait until settle.
+
+Pending → posted, **unique** match (exact amount, merchant case-insensitive, date within 7 days, 1:1): retarget that parent to the posted FITID, clear `lunchflow.pending`, write the posted payee and memo. Ambiguous, amount-changed at capture, or vanished: `deleteItem` that pending parent (confirmed or not) and add a posted download when Lunch Flow has one. Auth £100 / capture £95 with no still-pending id must not leave both amounts in the register.
 
 ## First import window
 
@@ -103,7 +105,7 @@ Do **not** import Lunch Flow `GET /accounts/{id}/balance` into Moneydance `ol.le
 2. Skip a mapped account whose Lunch Flow `status` is not `ACTIVE` (renew in Lunch Flow). Else `GET /accounts/{id}/transactions?include_pending=true&from=&to=` (`to` = today; `from` = min of mapping start, last posted − 7, oldest open hold − 1).
 3. Skip only FITIDs still on **live register** `ParentTxn`s on that account. Prune download-list rows whose FITID is already on the register.
 4. Posted with a non-null id: skip if FITID known; else `downloaded.newTxn()`, fill, `STATUS_NEW`.
-5. Pending: set-reconcile register parents with our pending FITID prefix (promote unique matches even if already confirmed; delete vanished holds even if confirmed); else add a NEW download.
+5. Pending: set-reconcile register parents with our pending FITID prefix (rewrite amount+payee if the hold is still open and the amount changed; promote unique matches even if already confirmed; delete vanished holds even if confirmed); else add a NEW download.
 6. `downloaded.syncItem()` + `account.downloadedTxnsUpdated()`.
 7. `MoneydanceGUI.showDownloadedTxns(account)`.
 8. On success, persist `lastPostedDate` and roll `syncStartDate` forward to last posted − 7 days (not earlier than the From the user set).

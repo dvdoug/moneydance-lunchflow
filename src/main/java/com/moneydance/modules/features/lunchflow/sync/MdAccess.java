@@ -7,6 +7,7 @@ import com.infinitekind.moneydance.model.CurrencyType;
 import com.infinitekind.moneydance.model.OnlineTxn;
 import com.infinitekind.moneydance.model.OnlineTxnList;
 import com.infinitekind.moneydance.model.ParentTxn;
+import com.infinitekind.moneydance.model.SplitTxn;
 import com.infinitekind.moneydance.model.TransactionSet;
 import com.infinitekind.moneydance.model.TxnSet;
 
@@ -286,6 +287,29 @@ public final class MdAccess {
 
     public static long getValue(ParentTxn txn) {
         return txn.getValue();
+    }
+
+    /** One-split category only. Three-arg {@code setAmount}; the two-arg form negates parent. */
+    public static boolean updatePendingParent(
+        ParentTxn parent,
+        long newParentAmount,
+        String description,
+        String memo
+    ) {
+        if (parent.getSplitCount() != 1) {
+            return false;
+        }
+        SplitTxn split = parent.getSplit(0);
+        Account dest = split.getAccount();
+        if (dest != null && !dest.getAccountType().isCategory()) {
+            return false;
+        }
+        parent.setEditingMode();
+        split.setAmount(-newParentAmount, 1.0d, newParentAmount);
+        parent.setDescription(description == null ? "" : description);
+        parent.setMemo(memo == null ? "" : memo);
+        parent.syncItem();
+        return true;
     }
 
     public static long toMinorUnits(Account account, double major) {

@@ -18,7 +18,7 @@ If Import says a bank is **not Active**, renew it in Lunch Flow first. This exte
 
 ## Pending card holds
 
-This extension asks Lunch Flow for pending transactions. They import as unconfirmed downloads until they post. Lunch Flow’s own [pending](https://www.lunchflow.app/docs/guides/troubleshooting/pending-transactions) page explains why some banks barely expose holds. If a hold never appears, that is usually the bank, not the mapping.
+This extension asks Lunch Flow for pending transactions. They import as unconfirmed downloads until they post. If Lunch Flow later changes the **amount** on that same hold, the next Import updates the register row. Lunch Flow’s own [pending](https://www.lunchflow.app/docs/guides/troubleshooting/pending-transactions) page explains why some banks barely expose holds. If a hold never appears, that is usually the bank, not the mapping.
 
 ## Wrong Moneydance account
 

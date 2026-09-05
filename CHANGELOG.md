@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 50 - 2026-09-05
+
+### Fixed
+- If Lunch Flow changes the amount on an open hold with the same pending id, the next Import updates that register row (payee and memo too). Description-only changes still wait until the hold settles.
+
 ## 49 - 2026-09-05
 
 ### Changed

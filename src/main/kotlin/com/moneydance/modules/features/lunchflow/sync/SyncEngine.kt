@@ -13,6 +13,7 @@ data class AccountSyncResult(
     val postedSkipped: Int = 0,
     val pendingAdded: Int = 0,
     val pendingUpdated: Int = 0,
+    val pendingAdjusted: Int = 0,
     val pendingRemoved: Int = 0,
     val pendingPromoted: Int = 0,
     val pendingPayees: List<String> = emptyList(),
@@ -76,6 +77,7 @@ class SyncEngine(
         var postedSkipped = 0
         var pendingAdded = 0
         var pendingUpdated = 0
+        var pendingAdjusted = 0
         var pendingRemoved = 0
         var pendingPromoted = 0
         var latestPosted: String? = mapping.lastPostedDate
@@ -110,7 +112,11 @@ class SyncEngine(
         for ((key, txn) in desiredPending) {
             val existing = ourPending.remove(key)
             if (existing != null) {
-                pendingUpdated++
+                if (rewriteOpenPending(mdAccount, existing, txn)) {
+                    pendingAdjusted++
+                } else {
+                    pendingUpdated++
+                }
             } else if (key in known) {
                 pendingUpdated++
             } else {
@@ -137,11 +143,26 @@ class SyncEngine(
             postedSkipped = postedSkipped,
             pendingAdded = pendingAdded,
             pendingUpdated = pendingUpdated,
+            pendingAdjusted = pendingAdjusted,
             pendingRemoved = pendingRemoved,
             pendingPromoted = pendingPromoted,
             lastPostedDate = latestPosted,
             oldestPendingDate = oldestOpenPendingDate(book, mapping)
         )
+    }
+
+    private fun rewriteOpenPending(
+        mdAccount: Account,
+        existing: ParentTxn,
+        txn: LunchFlowTransaction
+    ): Boolean {
+        val desired = MdAccess.toMinorUnits(mdAccount, txn.amount)
+        val current = MdAccess.getValue(existing)
+        if (!PendingAmount.changed(current, desired)) return false
+        val register = PendingAmount.registerMinor(current, desired)
+        if (!MdAccess.updatePendingParent(existing, register, txn.payee(), txn.memo())) return false
+        sanitizeLegacyPendingLabel(existing)
+        return true
     }
 
     private fun addDownloadTxn(
