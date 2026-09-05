@@ -9,8 +9,6 @@ object FitIds {
     const val PARAM_PENDING: String = "lunchflow.pending"
     const val PREFIX_POSTED: String = "lunchflow:"
     const val PREFIX_PENDING: String = "lunchflow:pending:"
-    const val PENDING_LABEL: String = "[PENDING] "
-    const val ORIG_PAYEE_TAG: String = "ol.orig-payee"
 
     fun posted(accountId: Long, txnId: String): String = "$PREFIX_POSTED$accountId:$txnId"
 
@@ -34,8 +32,6 @@ object FitIds {
     }
 
     fun isOurs(fitId: String?): Boolean = isPosted(fitId) || isPending(fitId)
-
-    fun stripPendingLabel(text: String): String = text.removePrefix(PENDING_LABEL)
 
     fun synthHash(txn: LunchFlowTransaction): String {
         val raw = listOf(

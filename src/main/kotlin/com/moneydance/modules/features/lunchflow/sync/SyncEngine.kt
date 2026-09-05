@@ -43,7 +43,6 @@ class SyncEngine(
 
         val known = collectRegisterFitIds(mdAccount)
         pruneStaleDownloads(mdAccount, known)
-        stripPendingFromDownloads(mdAccount)
         val pendingLf = txns.filter { it.isPending }
         val postedLf = txns.filter { !it.isPending && !it.id.isNullOrBlank() }
 
@@ -52,9 +51,6 @@ class SyncEngine(
             if (txn !is ParentTxn) continue
             if (!MdAccess.sameAccount(MdAccess.accountOf(txn), mdAccount)) continue
             val id = MdAccess.registerFiTxnId(txn, FitIds.PROTOCOL)
-            if (FitIds.isOurs(id)) {
-                sanitizeLegacyPendingLabel(txn)
-            }
             if (FitIds.isPending(id) && id != null) ourPending[id] = txn
         }
 
@@ -85,7 +81,6 @@ class SyncEngine(
             val existing = ourPending.remove(pair.pendingKey) ?: continue
             val fitId = FitIds.posted(lfAccount.id, pair.posted.id!!)
             MdAccess.promotePending(existing, pair.posted.payee(), pair.posted.memo(), fitId)
-            sanitizeLegacyPendingLabel(existing)
             known.add(fitId)
             pendingPromoted++
             latestPosted = maxDate(latestPosted, pair.posted.date)
@@ -157,7 +152,6 @@ class SyncEngine(
         if (!PendingAmount.changed(current, desired)) return false
         val register = PendingAmount.registerMinor(current, desired)
         if (!MdAccess.updatePendingParent(existing, register, txn.payee(), txn.memo())) return false
-        sanitizeLegacyPendingLabel(existing)
         return true
     }
 
@@ -205,31 +199,9 @@ class SyncEngine(
         MdAccess.downloadedUpdated(account)
     }
 
-    private fun stripPendingFromDownloads(account: Account) {
-        val downloaded = MdAccess.downloadedTxns(account) ?: return
-        var changed = false
-        for (i in 0 until MdAccess.txnCount(downloaded)) {
-            val row = MdAccess.txnAt(downloaded, i) ?: continue
-            if (!FitIds.isOurs(MdAccess.fiTxnId(row))) continue
-            val name = MdAccess.getName(row) ?: continue
-            if (!name.startsWith(FitIds.PENDING_LABEL)) continue
-            val clean = FitIds.stripPendingLabel(name)
-            MdAccess.setName(row, clean)
-            MdAccess.setMerchantName(row, clean)
-            changed = true
-        }
-        if (!changed) return
-        MdAccess.syncList(downloaded)
-    }
-
     private fun tagRegisterPending(txn: ParentTxn) {
-        sanitizeLegacyPendingLabel(txn)
         txn.setParameter(FitIds.PARAM_PENDING, true)
         txn.syncItem()
-    }
-
-    private fun sanitizeLegacyPendingLabel(txn: ParentTxn) {
-        MdAccess.stripLegacyPendingPrefix(txn, FitIds.PENDING_LABEL, FitIds.ORIG_PAYEE_TAG)
     }
 
     private fun collectRegisterFitIds(account: Account): MutableSet<String> {
@@ -244,7 +216,7 @@ class SyncEngine(
     }
 
     private fun snapshotFromParent(mdAccount: Account, parent: ParentTxn): LunchFlowTransaction? {
-        val desc = FitIds.stripPendingLabel(MdAccess.getDescription(parent).orEmpty()).trim()
+        val desc = MdAccess.getDescription(parent).orEmpty().trim()
         return LunchFlowTransaction(
             id = null,
             accountId = 0,

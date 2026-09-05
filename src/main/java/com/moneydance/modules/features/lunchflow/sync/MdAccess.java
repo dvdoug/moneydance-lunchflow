@@ -83,18 +83,6 @@ public final class MdAccess {
         return txn.getLocalStatus() == OnlineTxn.STATUS_ACCEPTED;
     }
 
-    public static void setName(OnlineTxn txn, String name) {
-        txn.setName(name);
-    }
-
-    public static String getName(OnlineTxn txn) {
-        return txn.getName();
-    }
-
-    public static void setMerchantName(OnlineTxn txn, String name) {
-        txn.setMerchantName(name);
-    }
-
     public static OnlineTxn addDownload(
         Account account,
         int dateInt,
@@ -183,27 +171,6 @@ public final class MdAccess {
         txn.removeParameter("lunchflow.pending");
         txn.setFiTxnId(OnlineTxn.PROTO_TYPE_OFX, fitId);
         txn.syncItem();
-    }
-
-    public static void stripLegacyPendingPrefix(ParentTxn txn, String prefix, String origPayeeTag) {
-        boolean dirty = false;
-        String current = txn.getDescription();
-        if (current != null && current.startsWith(prefix)) {
-            txn.setEditingMode();
-            txn.setDescription(current.substring(prefix.length()));
-            dirty = true;
-        }
-        String orig = txn.getParameter(origPayeeTag, "");
-        if (orig != null && orig.startsWith(prefix)) {
-            if (!dirty) {
-                txn.setEditingMode();
-            }
-            txn.setParameter(origPayeeTag, orig.substring(prefix.length()));
-            dirty = true;
-        }
-        if (dirty) {
-            txn.syncItem();
-        }
     }
 
     /** One-split category only. Three-arg {@code setAmount}; the two-arg form negates parent. */

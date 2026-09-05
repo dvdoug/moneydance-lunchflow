@@ -93,7 +93,7 @@ Pending → posted, **unique** match (exact amount, merchant case-insensitive, d
 
 Per mapping, **sync start date** (`YYYY-MM-DD`). Default for a **new** mapping row: first day of the current month. Blank in storage stays blank when the window opens (all history Lunch Flow will return **for this run**). Fetch from = min(From, lastPosted − 7 days, oldest open lunchflow:pending: date − 1 day). Seven days covers late posted clearing (timezone, weekend, holiday), not card-auth life; live holds keep the window open for as long as they sit. After a successful import, persist `syncStartDate = max(current From, lastPosted − 7)` so From only moves **forward**. A January backfill then walks up to last posted − 7. Typing an older From and clicking Import still backfills. `include_pending=true`.
 
-Pending identity is hidden FITID / `lunchflow.pending` only. Do not prefix Description with `[PENDING] `. `OnlineTxn.setName` and `ol.orig-payee` stay the raw merchant for similar-payee matching. A leftover `[PENDING] ` on Description or `ol.orig-payee` from older builds is stripped on our FITIDs at import.
+Pending identity is hidden FITID / `lunchflow.pending` only. `OnlineTxn.setName` stays the raw merchant for similar-payee matching.
 
 Currency: if Lunch Flow `currency` is set and differs from the Moneydance account’s `CurrencyType.idString`, skip that mapping (hard error).
 

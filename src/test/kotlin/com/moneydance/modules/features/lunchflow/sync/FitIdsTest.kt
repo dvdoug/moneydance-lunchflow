@@ -22,11 +22,4 @@ class FitIdsTest {
         assertTrue(FitIds.isOurs("lunchflow:7:abc"))
         assertFalse(FitIds.isOurs("ofx-other"))
     }
-
-    @Test
-    fun leftoverPendingPrefixStrips() {
-        assertEquals("TFL TRAVEL CHARGE", FitIds.stripPendingLabel("TFL TRAVEL CHARGE"))
-        assertEquals("TFL TRAVEL CHARGE", FitIds.stripPendingLabel("[PENDING] TFL TRAVEL CHARGE"))
-        assertEquals("ol.orig-payee", FitIds.ORIG_PAYEE_TAG)
-    }
 }

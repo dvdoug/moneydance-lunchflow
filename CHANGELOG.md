@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 53 - 2026-09-05
+
+### Removed
+- Leftover `[PENDING]` prefix handling from unreleased builds.
+
 ## 52 - 2026-09-05
 
 ### Changed
