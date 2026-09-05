@@ -2,30 +2,27 @@ package com.moneydance.modules.features.lunchflow.sync
 
 import com.infinitekind.moneydance.model.Account
 import com.infinitekind.moneydance.model.AccountBook
+import com.infinitekind.moneydance.model.AccountUtil
+import com.infinitekind.moneydance.model.AcctFilter
 
 object MdAccounts {
     private val MAPPABLE = setOf(
         Account.AccountType.BANK,
         Account.AccountType.CREDIT_CARD,
         Account.AccountType.ASSET,
-        Account.AccountType.LIABILITY,
-        Account.AccountType.LOAN,
-        Account.AccountType.INVESTMENT
+        Account.AccountType.LIABILITY
     )
 
     fun listMappable(book: AccountBook): List<Account> {
-        val out = mutableListOf<Account>()
-        walk(MdAccess.rootAccount(book), out)
-        return out.sortedBy { MdAccess.fullAccountName(it).lowercase() }
-    }
+        val filter = object : AcctFilter() {
+            override fun matches(acct: Account?): Boolean {
+                if (acct == null) return false
+                return MdAccess.accountType(acct) in MAPPABLE && !MdAccess.isInactive(acct)
+            }
 
-    private fun walk(account: Account?, out: MutableList<Account>) {
-        if (account == null) return
-        if (MdAccess.accountType(account) in MAPPABLE && !MdAccess.isInactive(account)) {
-            out.add(account)
+            override fun format(acct: Account): String? = MdAccess.fullAccountName(acct)
         }
-        for (i in 0 until MdAccess.subAccountCount(account)) {
-            walk(account.getSubAccount(i), out)
-        }
+        return AccountUtil.allMatchesForSearch(book, filter)
+            .sortedBy { MdAccess.fullAccountName(it).lowercase() }
     }
 }

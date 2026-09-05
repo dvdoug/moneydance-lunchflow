@@ -23,6 +23,14 @@ class TransactionsParserTest {
     }
 
     @Test
+    fun numericIdBecomesString() {
+        val txns = TransactionsParser.parse(
+            """{"transactions":[{"id":123,"accountId":1,"amount":-1,"date":"2026-03-01","isPending":false}]}"""
+        )
+        assertEquals("123", txns.single().id)
+    }
+
+    @Test
     fun errorEnvelopeIsParseError() {
         assertFailsWith<LunchFlowException.Parse> {
             TransactionsParser.parse("""{"error":"nope"}""")

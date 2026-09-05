@@ -18,8 +18,6 @@ def walk(acct, out):
         Account.AccountType.CREDIT_CARD,
         Account.AccountType.ASSET,
         Account.AccountType.LIABILITY,
-        Account.AccountType.LOAN,
-        Account.AccountType.INVESTMENT,
     ):
         if not acct.getAccountIsInactive():
             out.append(acct)

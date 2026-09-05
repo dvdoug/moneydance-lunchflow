@@ -16,7 +16,6 @@ data class AccountSyncResult(
     val pendingAdjusted: Int = 0,
     val pendingRemoved: Int = 0,
     val pendingPromoted: Int = 0,
-    val pendingPayees: List<String> = emptyList(),
     val lastPostedDate: String? = null,
     val oldestPendingDate: String? = null,
     val error: String? = null
@@ -53,7 +52,7 @@ class SyncEngine(
             if (txn !is ParentTxn) continue
             if (!MdAccess.sameAccount(MdAccess.accountOf(txn), mdAccount)) continue
             val id = MdAccess.registerFiTxnId(txn, FitIds.PROTOCOL)
-            if (FitIds.isOurs(id) || FitIds.isPending(id)) {
+            if (FitIds.isOurs(id)) {
                 sanitizeLegacyPendingLabel(txn)
             }
             if (FitIds.isPending(id) && id != null) ourPending[id] = txn
@@ -85,11 +84,8 @@ class SyncEngine(
         for (pair in promotions) {
             val existing = ourPending.remove(pair.pendingKey) ?: continue
             val fitId = FitIds.posted(lfAccount.id, pair.posted.id!!)
-            MdAccess.setDescription(existing, pair.posted.payee())
-            MdAccess.setMemo(existing, pair.posted.memo())
+            MdAccess.promotePending(existing, pair.posted.payee(), pair.posted.memo(), fitId)
             sanitizeLegacyPendingLabel(existing)
-            MdAccess.clearPendingFlag(existing)
-            MdAccess.setRegisterFitId(existing, fitId)
             known.add(fitId)
             pendingPromoted++
             latestPosted = maxDate(latestPosted, pair.posted.date)
@@ -233,14 +229,7 @@ class SyncEngine(
     }
 
     private fun sanitizeLegacyPendingLabel(txn: ParentTxn) {
-        val current = MdAccess.getDescription(txn).orEmpty()
-        if (current.startsWith(FitIds.PENDING_LABEL)) {
-            MdAccess.setDescription(txn, FitIds.stripPendingLabel(current))
-        }
-        val orig = txn.getParameter(FitIds.ORIG_PAYEE_TAG, "") ?: return
-        if (!orig.startsWith(FitIds.PENDING_LABEL)) return
-        txn.setParameter(FitIds.ORIG_PAYEE_TAG, FitIds.stripPendingLabel(orig))
-        txn.syncItem()
+        MdAccess.stripLegacyPendingPrefix(txn, FitIds.PENDING_LABEL, FitIds.ORIG_PAYEE_TAG)
     }
 
     private fun collectRegisterFitIds(account: Account): MutableSet<String> {

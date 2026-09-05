@@ -15,6 +15,7 @@ internal object TransactionsParser {
             val idVal = o["id"]
             val id = when (idVal) {
                 null, JsonVal.Null -> null
+                is JsonVal.Num -> idVal.long()?.toString()
                 else -> idVal.str()?.takeIf { it.isNotBlank() }
             }
             LunchFlowTransaction(

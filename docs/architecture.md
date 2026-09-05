@@ -22,7 +22,7 @@ It talks **outbound HTTPS** to Lunch Flow’s Personal API and writes into the o
 
 | | Personal API | Platform API |
 | --- | --- | --- |
-| Base URL | `https://lunchflow.app/api/v1` | `https://lunchflow.app/api/platform/v1` |
+| Base URL | `https://www.lunchflow.app/api/v1` | `https://www.lunchflow.app/api/platform/v1` |
 | Auth | `x-api-key` from the user’s API destination | `client_id` / `client_secret` + OAuth |
 | Who is the Lunch Flow customer | The Moneydance user | This app, or the user via app-pays / user-pays |
 | Bank linking | Already done in Lunch Flow | In-app OAuth, closer to Moneydance+ |
@@ -78,8 +78,8 @@ Hidden metadata (not user Keywords):
 | --- | --- | --- |
 | FITID `lunchflow:{accountId}:{txnId}` | `OnlineTxn.setFITxnId` / `AbstractTxn.setFiTxnId(PROTO_TYPE_OFX, …)` | Posted identity; skip + merge |
 | FITID `lunchflow:pending:{accountId}:{id-or-synth}` | same | Pending identity |
-| `lunchflow.pending` = `true` | `OnlineTxn.setExtraParameter` / `ParentTxn.setParameter` | Cheap filter |
 | `OnlineTxn.setPending(true)` | downloaded row | Staging flag |
+| `lunchflow.pending` = `true` | `ParentTxn.setParameter` after convert | Cheap filter on the register row |
 
 Null Lunch Flow pending ids use `synth:{sha256(date, amount, currency, merchant, description).take(16)}`.
 

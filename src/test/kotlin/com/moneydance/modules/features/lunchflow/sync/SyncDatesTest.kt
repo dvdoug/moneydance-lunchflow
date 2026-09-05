@@ -38,9 +38,9 @@ class SyncDatesTest {
 
     @Test
     fun nextStartIsLastPostedMinusOverlap() {
-        assertEquals("2026-08-22", AccountMapping.nextStartAfter("2026-08-29"))
-        assertNull(AccountMapping.nextStartAfter(null))
-        assertNull(AccountMapping.nextStartAfter("  "))
+        assertEquals("2026-08-22", AccountMapping.lookbackFloor("2026-08-29", null))
+        assertNull(AccountMapping.lookbackFloor(null, null))
+        assertNull(AccountMapping.lookbackFloor("  ", null))
         assertEquals("2026-08-09", AccountMapping.lookbackFloor("2026-08-29", "2026-08-10"))
     }
 

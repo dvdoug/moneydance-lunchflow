@@ -3,6 +3,7 @@ package com.moneydance.modules.features.lunchflow.sync
 import com.moneydance.modules.features.lunchflow.api.LunchFlowTransaction
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class FitIdsTest {
@@ -15,6 +16,11 @@ class FitIdsTest {
         val key = FitIds.pendingKey(7, pending)
         assertTrue(key.startsWith("lunchflow:pending:7:synth:"))
         assertEquals(key, FitIds.pendingKey(7, pending))
+        assertTrue(FitIds.isPosted("lunchflow:7:abc"))
+        assertFalse(FitIds.isPosted("lunchflow:pending:7:abc"))
+        assertTrue(FitIds.isOurs("lunchflow:pending:7:abc"))
+        assertTrue(FitIds.isOurs("lunchflow:7:abc"))
+        assertFalse(FitIds.isOurs("ofx-other"))
     }
 
     @Test

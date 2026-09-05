@@ -3,21 +3,15 @@ package com.moneydance.modules.features.lunchflow.sync;
 import com.infinitekind.moneydance.model.Account;
 import com.infinitekind.moneydance.model.AccountBook;
 import com.infinitekind.moneydance.model.AbstractTxn;
-import com.infinitekind.moneydance.model.CurrencyType;
 import com.infinitekind.moneydance.model.OnlineTxn;
 import com.infinitekind.moneydance.model.OnlineTxnList;
 import com.infinitekind.moneydance.model.ParentTxn;
 import com.infinitekind.moneydance.model.SplitTxn;
-import com.infinitekind.moneydance.model.TransactionSet;
 import com.infinitekind.moneydance.model.TxnSet;
 
 /** Java facades for Kotlin-private properties that still have public getters on the bytecode. */
 public final class MdAccess {
     private MdAccess() {}
-
-    public static Account rootAccount(AccountBook book) {
-        return book.getRootAccount();
-    }
 
     public static Account.AccountType accountType(Account account) {
         return account.getAccountType();
@@ -27,20 +21,12 @@ public final class MdAccess {
         return account.getAccountIsInactive();
     }
 
-    public static int subAccountCount(Account account) {
-        return account.getSubAccountCount();
-    }
-
     public static String fullAccountName(Account account) {
         return account.getFullAccountName();
     }
 
     public static String uuid(Account account) {
         return account.getUUID();
-    }
-
-    public static CurrencyType currency(Account account) {
-        return account.getCurrencyType();
     }
 
     public static String currencyId(Account account) {
@@ -60,11 +46,8 @@ public final class MdAccess {
     }
 
     public static OnlineTxn newTxn(OnlineTxnList list) {
-        int before = list.getTxnCount();
         OnlineTxn txn = list.newTxn();
-        if (list.getTxnCount() == before) {
-            list.addNewTxn(txn);
-        }
+        list.addNewTxn(txn);
         return txn;
     }
 
@@ -88,10 +71,6 @@ public final class MdAccess {
         account.downloadedTxnsUpdated();
     }
 
-    public static TransactionSet transactionSet(AccountBook book) {
-        return book.getTransactionSet();
-    }
-
     public static TxnSet txnsForAccount(AccountBook book, Account account) {
         return book.getTransactionSet().getTransactionsForAccount(account);
     }
@@ -100,32 +79,8 @@ public final class MdAccess {
         return txn.getFITxnId();
     }
 
-    public static int localStatus(OnlineTxn txn) {
-        return txn.getLocalStatus();
-    }
-
-    public static void setNew(OnlineTxn txn) {
-        txn.setLocalStatus(OnlineTxn.STATUS_NEW);
-    }
-
     public static boolean isAcceptedDownload(OnlineTxn txn) {
         return txn.getLocalStatus() == OnlineTxn.STATUS_ACCEPTED;
-    }
-
-    public static void setFiTxnId(OnlineTxn txn, String id) {
-        txn.setFITxnId(id);
-    }
-
-    public static void setProtocolType(OnlineTxn txn, int type) {
-        txn.setProtocolType(type);
-    }
-
-    public static void setAmount(OnlineTxn txn, long amount) {
-        txn.setAmount(amount);
-    }
-
-    public static long getAmount(OnlineTxn txn) {
-        return txn.getAmount();
     }
 
     public static void setName(OnlineTxn txn, String name) {
@@ -136,44 +91,8 @@ public final class MdAccess {
         return txn.getName();
     }
 
-    public static void setMemo(OnlineTxn txn, String memo) {
-        txn.setMemo(memo);
-    }
-
-    public static String getMemo(OnlineTxn txn) {
-        return txn.getMemo();
-    }
-
     public static void setMerchantName(OnlineTxn txn, String name) {
         txn.setMerchantName(name);
-    }
-
-    public static String getMerchantName(OnlineTxn txn) {
-        return txn.getMerchantName();
-    }
-
-    public static void setDatePostedInt(OnlineTxn txn, int dateInt) {
-        txn.setDatePostedInt(dateInt);
-    }
-
-    public static int getDatePostedInt(OnlineTxn txn) {
-        return txn.getDatePostedInt();
-    }
-
-    public static void setDateInitiatedInt(OnlineTxn txn, int dateInt) {
-        txn.setDateInitiatedInt(dateInt);
-    }
-
-    public static void setPending(OnlineTxn txn, boolean pending) {
-        txn.setPending(pending);
-    }
-
-    public static void setIsoCurrency(OnlineTxn txn, String iso) {
-        txn.setISOCurrencyCode(iso);
-    }
-
-    public static String getIsoCurrency(OnlineTxn txn) {
-        return txn.getISOCurrencyCode();
     }
 
     public static OnlineTxn addDownload(
@@ -188,21 +107,6 @@ public final class MdAccess {
     ) {
         OnlineTxnList list = account.getDownloadedTxns();
         OnlineTxn txn = newTxn(list);
-        fillDownload(txn, dateInt, amount, name, memo, fitId, pending, isoCurrency);
-        setNew(txn);
-        return txn;
-    }
-
-    public static void fillDownload(
-        OnlineTxn txn,
-        int dateInt,
-        long amount,
-        String name,
-        String memo,
-        String fitId,
-        boolean pending,
-        String isoCurrency
-    ) {
         String payee = name == null ? "" : name;
         txn.setProtocolType(OnlineTxn.PROTO_TYPE_OFX);
         txn.setFITxnId(fitId);
@@ -213,9 +117,11 @@ public final class MdAccess {
         txn.setDatePostedInt(dateInt);
         txn.setDateInitiatedInt(dateInt);
         txn.setPending(pending);
+        txn.setLocalStatus(OnlineTxn.STATUS_NEW);
         if (isoCurrency != null && !isoCurrency.isEmpty()) {
             txn.setISOCurrencyCode(isoCurrency);
         }
+        return txn;
     }
 
     public static String registerFiTxnId(AbstractTxn txn, int protocol) {
@@ -246,10 +152,6 @@ public final class MdAccess {
         return txn.getAccount();
     }
 
-    public static boolean isNew(ParentTxn txn) {
-        return txn.isNew();
-    }
-
     public static boolean sameAccount(Account a, Account b) {
         if (a == b) {
             return true;
@@ -262,23 +164,8 @@ public final class MdAccess {
         return left != null && left.equals(right);
     }
 
-    public static void clearPendingFlag(ParentTxn txn) {
-        txn.removeParameter("lunchflow.pending");
-        txn.syncItem();
-    }
-
-    public static void setDescription(ParentTxn txn, String description) {
-        txn.setDescription(description);
-        txn.syncItem();
-    }
-
     public static String getDescription(ParentTxn txn) {
         return txn.getDescription();
-    }
-
-    public static void setMemo(ParentTxn txn, String memo) {
-        txn.setMemo(memo == null ? "" : memo);
-        txn.syncItem();
     }
 
     public static int getDateInt(ParentTxn txn) {
@@ -287,6 +174,36 @@ public final class MdAccess {
 
     public static long getValue(ParentTxn txn) {
         return txn.getValue();
+    }
+
+    public static void promotePending(ParentTxn txn, String description, String memo, String fitId) {
+        txn.setEditingMode();
+        txn.setDescription(description == null ? "" : description);
+        txn.setMemo(memo == null ? "" : memo);
+        txn.removeParameter("lunchflow.pending");
+        txn.setFiTxnId(OnlineTxn.PROTO_TYPE_OFX, fitId);
+        txn.syncItem();
+    }
+
+    public static void stripLegacyPendingPrefix(ParentTxn txn, String prefix, String origPayeeTag) {
+        boolean dirty = false;
+        String current = txn.getDescription();
+        if (current != null && current.startsWith(prefix)) {
+            txn.setEditingMode();
+            txn.setDescription(current.substring(prefix.length()));
+            dirty = true;
+        }
+        String orig = txn.getParameter(origPayeeTag, "");
+        if (orig != null && orig.startsWith(prefix)) {
+            if (!dirty) {
+                txn.setEditingMode();
+            }
+            txn.setParameter(origPayeeTag, orig.substring(prefix.length()));
+            dirty = true;
+        }
+        if (dirty) {
+            txn.syncItem();
+        }
     }
 
     /** One-split category only. Three-arg {@code setAmount}; the two-arg form negates parent. */
@@ -322,10 +239,5 @@ public final class MdAccess {
 
     public static void deleteTxn(ParentTxn txn) {
         txn.deleteItem();
-    }
-
-    public static void setRegisterFitId(ParentTxn txn, String fitId) {
-        txn.setFiTxnId(OnlineTxn.PROTO_TYPE_OFX, fitId);
-        txn.syncItem();
     }
 }

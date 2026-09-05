@@ -52,8 +52,6 @@ data class AccountMapping(
         fun plusDays(isoDate: String, days: Long): String =
             LocalDate.parse(isoDate).plusDays(days).toString()
 
-        fun nextStartAfter(lastPosted: String?): String? = lookbackFloor(lastPosted, null)
-
         fun lookbackFloor(lastPosted: String?, oldestPending: String?): String? {
             val posted = lastPosted?.takeIf { it.isNotBlank() }?.let { plusDays(it, -POSTED_OVERLAP_DAYS) }
             val pending = oldestPending?.takeIf { it.isNotBlank() }?.let { plusDays(it, -PENDING_PAD_DAYS) }

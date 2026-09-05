@@ -121,7 +121,9 @@ private class JsonReader(private val s: String) {
                         'u' -> {
                             if (i + 4 > s.length) throw LunchFlowException.Parse("Bad unicode escape")
                             val hex = s.substring(i, i + 4)
-                            out.append(hex.toInt(16).toChar())
+                            val cp = hex.toIntOrNull(16)
+                                ?: throw LunchFlowException.Parse("Bad unicode escape")
+                            out.append(cp.toChar())
                             i += 4
                         }
                         else -> throw LunchFlowException.Parse("Bad escape \\$e")

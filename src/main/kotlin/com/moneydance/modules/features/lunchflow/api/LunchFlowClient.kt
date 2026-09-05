@@ -73,10 +73,7 @@ class LunchFlowClient(
 }
 
 class JdkHttpGet(
-    private val client: HttpClient = HttpClient.newBuilder()
-        .connectTimeout(Duration.ofSeconds(15))
-        .followRedirects(HttpClient.Redirect.NORMAL)
-        .build()
+    private val client: HttpClient = sharedClient
 ) : HttpGet {
     override fun get(url: String, headers: Map<String, String>): RawHttpResponse {
         val builder = HttpRequest.newBuilder(URI.create(url))
@@ -85,5 +82,12 @@ class JdkHttpGet(
         headers.forEach { (name, value) -> builder.header(name, value) }
         val response = client.send(builder.build(), HttpResponse.BodyHandlers.ofString())
         return RawHttpResponse(response.statusCode(), response.body() ?: "")
+    }
+
+    companion object {
+        private val sharedClient: HttpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(15))
+            .followRedirects(HttpClient.Redirect.NORMAL)
+            .build()
     }
 }

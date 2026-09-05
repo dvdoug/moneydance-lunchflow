@@ -149,7 +149,6 @@ class Main : FeatureModule() {
     companion object {
         const val ID: String = "lunchflow"
         const val DISPLAY_NAME: String = "Lunch Flow"
-        const val AUTHOR: String = "Doug Wright"
         const val SHOW: String = "show"
 
         const val THIRD_PARTY_DISCLAIMER: String =

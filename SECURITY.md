@@ -16,7 +16,7 @@ If a key leaks: the user revokes/rotates it in the Lunch Flow dashboard. Documen
 
 - Call bank APIs or store bank passwords. Lunch Flow is the aggregator; access is read-only.
 - Ship a Lunch Flow Platform `client_secret` inside the `.mxt` (the MXT is a zip).
-- Send Moneydance data *to* Lunch Flow or anywhere else. Outbound traffic is GET requests to `https://lunchflow.app/api/v1` only.
+- Send Moneydance data *to* Lunch Flow or anywhere else. Outbound traffic is GET requests to `https://www.lunchflow.app/api/v1` only.
 - Delete Moneydance transactions we did not create. Pending cleanup only deletes `ParentTxn`s we tagged `lunchflow:pending:…` (including after the user confirmed the blue dot). Never delete reminder/typed rows or posted `lunchflow:` FITIDs. Never follow a split onto another account’s parent.
 
 ## Signing

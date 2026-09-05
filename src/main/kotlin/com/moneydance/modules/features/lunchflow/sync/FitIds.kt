@@ -23,15 +23,17 @@ object FitIds {
         }
     }
 
-    fun isOurs(fitId: String?): Boolean {
-        val v = fitId ?: return false
-        return v.startsWith(PREFIX_POSTED)
-    }
-
     fun isPending(fitId: String?): Boolean {
         val v = fitId ?: return false
         return v.startsWith(PREFIX_PENDING)
     }
+
+    fun isPosted(fitId: String?): Boolean {
+        val v = fitId ?: return false
+        return v.startsWith(PREFIX_POSTED) && !isPending(v)
+    }
+
+    fun isOurs(fitId: String?): Boolean = isPosted(fitId) || isPending(fitId)
 
     fun stripPendingLabel(text: String): String = text.removePrefix(PENDING_LABEL)
 
