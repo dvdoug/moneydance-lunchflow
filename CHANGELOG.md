@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 46 - 2026-09-05
+
+### Changed
+- API key is stored only with `LocalStorage.put`, same as Moneydance+ Plaid tokens. Dropped `cacheAuthentication` (that cache is not written unless the file password and “store passwords” are both on).
+
 ## 45 - 2026-08-31
 
 ### Changed

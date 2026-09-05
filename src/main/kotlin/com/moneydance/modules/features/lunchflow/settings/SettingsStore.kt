@@ -4,27 +4,19 @@ import com.infinitekind.moneydance.model.AccountBook
 import com.infinitekind.moneydance.model.LocalStorage
 
 class SettingsStore(
-    private val getAuth: (String) -> String?,
-    private val setAuth: (String, String) -> Unit,
-    private val clearAuth: (String) -> Unit,
     private val getPlain: (String) -> String? = { null },
     private val setPlain: (String, String) -> Unit = { _, _ -> },
     private val removePlain: (String) -> Unit = { }
 ) {
-    fun apiKey(): String? {
-        getPlain(API_KEY)?.trim()?.takeIf { it.isNotEmpty() }?.let { return it }
-        return getAuth(API_KEY)?.trim()?.takeIf { it.isNotEmpty() }
-    }
+    fun apiKey(): String? = getPlain(API_KEY)?.trim()?.takeIf { it.isNotEmpty() }
 
     fun setApiKey(value: String) {
         val trimmed = value.trim()
         if (trimmed.isEmpty()) return
-        setAuth(API_KEY, trimmed)
         setPlain(API_KEY, trimmed)
     }
 
     fun clearApiKey() {
-        clearAuth(API_KEY)
         removePlain(API_KEY)
     }
 
@@ -48,15 +40,6 @@ class SettingsStore(
         fun fromBook(book: AccountBook?): SettingsStore? {
             val storage: LocalStorage = book?.localStorage ?: return null
             return SettingsStore(
-                getAuth = { storage.getCachedAuthentication(it) },
-                setAuth = { key, value ->
-                    storage.cacheAuthentication(key, value)
-                    storage.save()
-                },
-                clearAuth = { key ->
-                    storage.clearAuthenticationCache(key)
-                    storage.save()
-                },
                 getPlain = { storage[it] },
                 setPlain = { key, value ->
                     storage.put(key, value)

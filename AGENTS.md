@@ -4,13 +4,13 @@ Instructions for AI coding agents working in this repository. Humans should star
 
 ## Current state (read this first)
 
-Shipped locally as **`module_build` 45** (`Version.kt`, `meta_info.dict`, and [CHANGELOG.md](CHANGELOG.md) must stay in lockstep). Phase 3 import is done. Phase 4 polish is in progress.
+Shipped locally as **`module_build` 46** (`Version.kt`, `meta_info.dict`, and [CHANGELOG.md](CHANGELOG.md) must stay in lockstep). Phase 3 import is done. Phase 4 polish is in progress.
 
 **Import path (do not regress):** write `OnlineTxn`s onto `account.getDownloadedTxns()`, then `MoneydanceGUI.showDownloadedTxns(account)` (`OnlineManager.processDownloadedTxns`). That is Moneydance’s OFX Confirm / Merge path (`ol.orig-txn`, blue dots). **Do not create `ParentTxn`s.** v19–v21 custom `ParentTxn` factories and “attach missing original” repairs were deleted on purpose.
 
 **What works now**
 
-- Settings: paste API key, Save key, Remove key. Persist `lunchflow.apiKey` with **both** `LocalStorage.put` (read this first) and `cacheAuthentication`. Empty `setApiKey` is a no-op; only `clearApiKey` / Remove key deletes. Never log the key.
+- Settings: paste API key, Save key, Remove key. Persist `lunchflow.apiKey` with `LocalStorage.put` only (same layer as MD+ `access_tokens`). Empty `setApiKey` is a no-op; only `clearApiKey` / Remove key deletes. Never log the key.
 - Mapping table: Lunch Flow account → Moneydance account + **From** date. Saved as `lunchflow.mappings`. **No Save mappings button.** Persist on **Import**, and on Close / title-bar X / Alt+F4 / Escape (`goneAway`), but only if accounts loaded this session (do not wipe mappings if the table never populated).
 - **Import** and **import when this file opens** (checkbox, default **off** until `lunchflow.importOnOpen=true`) share `SyncService`. HTTP off EDT; `showDownloadedTxns` + pending reconcile on EDT.
 - Progress: `MoneydanceGUI.setStatus("Lunch Flow: …", progress)` and Help → Console (`lunchflow:` via `System.err` + `AppDebug.ALL`). Never log the key.
@@ -54,7 +54,7 @@ Do not rename the extension ID after the first public build. Infinite Kind treat
 
 ## Hard rules
 
-- **Never hardcode a Lunch Flow API key, client secret, or any credential.** Keys come from the extension Settings UI and are stored in the open data file (`LocalStorage.put` + `cacheAuthentication`).
+- **Never hardcode a Lunch Flow API key, client secret, or any credential.** Keys come from the extension Settings UI and are stored in the open data file (`LocalStorage.put("lunchflow.apiKey")` only).
 - **Lunch Flow signed cashflow goes on `OnlineTxn.setAmount`.** Moneydance’s download converter owns register signs. Do not create `ParentTxn`s or flip amounts ourselves.
 - **Use the Personal API only** (`https://www.lunchflow.app/api/v1`, header `x-api-key`; follow redirects). Do not add the Platform API (`/api/platform/v1`, OAuth, `client_id` / `client_secret`) unless product direction explicitly changes. See [docs/architecture.md](docs/architecture.md).
 - **Never log the API key**, paste it into commits, write it to `System.err` / `AppDebug`, or include it in crash reports. Mask it in the UI (`••••` plus last 4).
@@ -93,7 +93,7 @@ Moneydance (JVM, Swing)
         └─ Home widget  → last sync status (optional, later)
 ```
 
-Settings and account mappings live **in the open `AccountBook`** so they travel with the data file. Store the API key in `LocalStorage.put("lunchflow.apiKey")` and also `cacheAuthentication`. The data file is already encrypted; the auth cache alone has dropped the key after a restart. Mappings stay in `lunchflow.mappings`.
+Settings and account mappings live **in the open `AccountBook`** so they travel with the data file. Store the API key with `LocalStorage.put("lunchflow.apiKey")` only — not `cacheAuthentication` (MD strips `_authentication` on save unless the file has a password and “store passwords”). Mappings stay in `lunchflow.mappings`.
 
 HTTP client: Java 11+ `HttpClient` from the JRE Moneydance ships (MD2024: JRE 21, MD2026: JRE 25). No extra HTTP stack unless there is a clear need.
 

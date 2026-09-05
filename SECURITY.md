@@ -8,7 +8,7 @@ This extension reads the user’s bank transactions via Lunch Flow and writes th
 - The user creates it in Lunch Flow (**Destinations → API**) and pastes it into **Extensions → Lunch Flow → Settings**.
 - **Never** put a key in source, Gradle properties committed to git, `meta_info.dict`, CI logs, or issue trackers.
 - Do not echo the key in `AppDebug` / `System.err` / exception messages. Mask in the UI.
-- Store it in the **open Moneydance data file** (already encrypted with the file password): `LocalStorage.put("lunchflow.apiKey")` plus `cacheAuthentication`. Do not use a sidecar file or logs. Do not delete the data-file copy after writing the auth cache — that cache can be empty after a restart.
+- Store it in the **open Moneydance data file** (already encrypted with the file password): `LocalStorage.put("lunchflow.apiKey")` only. Do not use `cacheAuthentication`, a sidecar file, or logs.
 
 If a key leaks: the user revokes/rotates it in the Lunch Flow dashboard. Document that in the Settings UI.
 

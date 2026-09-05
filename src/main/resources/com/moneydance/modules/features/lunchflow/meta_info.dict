@@ -3,6 +3,6 @@
   "module_name" = "Lunch Flow"
   "module_desc" = "Import transactions from UK and EU bank accounts using Open Banking. Uses Lunch Flow, a third-party service. Not affiliated with Lunch Flow or The Infinite Kind."
   "id" = "lunchflow"
-  "module_build" = "45"
+  "module_build" = "46"
   "minbuild" = "5100"
 }
