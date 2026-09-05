@@ -52,7 +52,7 @@ class LunchFlowWindow(
     private val saveButton = JButton("Save key")
     private val forgetButton = JButton("Remove key")
     private val syncButton = JButton("Import")
-    private val importOnOpenBox = JCheckBox("Import when this file opens")
+    private val importOnOpenBox = JCheckBox("Automatically import")
     private var busy = false
     private var lfAccounts: List<LunchFlowAccount> = emptyList()
 
@@ -78,7 +78,7 @@ class LunchFlowWindow(
         importOnOpenBox.addActionListener {
             val on = importOnOpenBox.isSelected
             settings?.setImportOnOpen(on)
-            MdNotify.log(if (on) "import on file open enabled" else "import on file open disabled")
+            MdNotify.log(if (on) "automatic import enabled" else "automatic import disabled")
         }
 
         setBusyButtons(true)
@@ -302,7 +302,6 @@ class LunchFlowWindow(
             gui = mdGUI,
             mappings = maps,
             key = key,
-            reason = "import",
             onStatus = { showStatus(it) },
             onBusy = { setImportBusy(it) },
             onAccounts = { showAccounts(it) },

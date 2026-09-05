@@ -24,29 +24,27 @@ object SyncService {
         gui: MoneydanceGUI,
         mappings: List<AccountMapping>,
         key: String,
-        reason: String,
         onStatus: (String) -> Unit = {},
         onBusy: (Boolean) -> Unit = {},
         onAccounts: (List<LunchFlowAccount>) -> Unit = {},
         onMappings: (List<AccountMapping>) -> Unit = {}
     ): Boolean {
         if (inFlight) {
-            MdNotify.log("skip $reason (already running)")
+            MdNotify.log("skip import (already running)")
             return false
         }
         val mapped = mappings.filter { it.moneydanceAccountUuid.isNotBlank() }
         if (mapped.isEmpty()) {
-            MdNotify.log("skip $reason (no mapped accounts)")
+            MdNotify.log("skip import (no mapped accounts)")
             onStatus("Choose a Moneydance account for at least one row.")
             return false
         }
         inFlight = true
         onBusy(true)
         val n = mapped.size
-        MdNotify.log("$reason started ($n mapped account${if (n == 1) "" else "s"})")
-        val startText = if (reason == "auto-import") "importing on file open" else "importing"
-        MdNotify.bar(gui, startText, 0.02)
-        onStatus(startText.replaceFirstChar { it.uppercase() } + "…")
+        MdNotify.log("import started ($n mapped account${if (n == 1) "" else "s"})")
+        MdNotify.bar(gui, "importing", 0.02)
+        onStatus("Importing…")
 
         object : SwingWorker<FetchBundle, Progress>() {
             override fun doInBackground(): FetchBundle {
@@ -91,11 +89,11 @@ object SyncService {
             override fun done() {
                 try {
                     val bundle = get()
-                    applyFetched(book, settings, gui, bundle, reason, onStatus, onAccounts, onMappings)
+                    applyFetched(book, settings, gui, bundle, onStatus, onAccounts, onMappings)
                 } catch (e: Exception) {
                     val cause = e.cause ?: e
                     val msg = cause.message ?: "Import failed."
-                    MdNotify.log("$reason failed: ${cause.javaClass.simpleName}: $msg", cause)
+                    MdNotify.log("import failed: ${cause.javaClass.simpleName}: $msg", cause)
                     MdNotify.bar(gui, msg, 0.0)
                     onStatus(msg)
                 } finally {
@@ -112,7 +110,6 @@ object SyncService {
         settings: SettingsStore,
         gui: MoneydanceGUI,
         bundle: FetchBundle,
-        reason: String,
         onStatus: (String) -> Unit,
         onAccounts: (List<LunchFlowAccount>) -> Unit,
         onMappings: (List<AccountMapping>) -> Unit
@@ -128,7 +125,7 @@ object SyncService {
                 updated.add(item.mapping.withLunchFlow(item.lf))
                 results.add(AccountSyncResult(error = line))
                 lines.add(if (item.lf != null) "${item.lf.name}: $line" else line)
-                MdNotify.log("$reason ${item.lf?.name ?: item.mapping.lunchFlowAccountId}: $line")
+                MdNotify.log("${item.lf?.name ?: item.mapping.lunchFlowAccountId}: $line")
                 return@forEachIndexed
             }
             MdNotify.bar(gui, "importing ${item.lf.name}", 0.55 + 0.4 * (index + 1) / total)
@@ -150,9 +147,8 @@ object SyncService {
         onAccounts(bundle.accounts)
         onMappings(updated)
         val overall = ImportStatus.overall(results)
-        val prefix = if (reason == "auto-import") "auto-import " else ""
-        MdNotify.log("$reason finished: $overall")
-        MdNotify.bar(gui, prefix + overall, 1.0)
+        MdNotify.log("import finished: $overall")
+        MdNotify.bar(gui, overall, 1.0)
         onStatus(lines.joinToString("\n"))
     }
 

@@ -48,7 +48,7 @@ If you already typed the spend (or a reminder created it), **Merge** the downloa
 
 The bottom status bar shows progress. More detail is in **Help → Console Window** (lines starting `lunchflow:`). The API key is never written there.
 
-**Import when this file opens** is **off** until you tick it. Tick it only after mappings look right.
+**Automatically import** is **off** until you tick it. Tick it only after mappings look right.
 
 ## Next
 

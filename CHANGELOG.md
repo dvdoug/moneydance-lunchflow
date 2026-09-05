@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 47 - 2026-09-05
+
+### Changed
+- Checkbox label is **Automatically import**. Status bar and console say importing, not “on file open”.
+
 ## 46 - 2026-09-05
 
 ### Changed

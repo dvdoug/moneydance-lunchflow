@@ -4,7 +4,7 @@ Instructions for AI coding agents working in this repository. Humans should star
 
 ## Current state (read this first)
 
-Shipped locally as **`module_build` 46** (`Version.kt`, `meta_info.dict`, and [CHANGELOG.md](CHANGELOG.md) must stay in lockstep). Phase 3 import is done. Phase 4 polish is in progress.
+Shipped locally as **`module_build` 47** (`Version.kt`, `meta_info.dict`, and [CHANGELOG.md](CHANGELOG.md) must stay in lockstep). Phase 3 import is done. Phase 4 polish is in progress.
 
 **Import path (do not regress):** write `OnlineTxn`s onto `account.getDownloadedTxns()`, then `MoneydanceGUI.showDownloadedTxns(account)` (`OnlineManager.processDownloadedTxns`). That is Moneydance’s OFX Confirm / Merge path (`ol.orig-txn`, blue dots). **Do not create `ParentTxn`s.** v19–v21 custom `ParentTxn` factories and “attach missing original” repairs were deleted on purpose.
 
@@ -12,7 +12,7 @@ Shipped locally as **`module_build` 46** (`Version.kt`, `meta_info.dict`, and [C
 
 - Settings: paste API key, Save key, Remove key. Persist `lunchflow.apiKey` with `LocalStorage.put` only (same layer as MD+ `access_tokens`). Empty `setApiKey` is a no-op; only `clearApiKey` / Remove key deletes. Never log the key.
 - Mapping table: Lunch Flow account → Moneydance account + **From** date. Saved as `lunchflow.mappings`. **No Save mappings button.** Persist on **Import**, and on Close / title-bar X / Alt+F4 / Escape (`goneAway`), but only if accounts loaded this session (do not wipe mappings if the table never populated).
-- **Import** and **import when this file opens** (checkbox, default **off** until `lunchflow.importOnOpen=true`) share `SyncService`. HTTP off EDT; `showDownloadedTxns` + pending reconcile on EDT.
+- **Import** and **Automatically import** (checkbox, default **off** until `lunchflow.importOnOpen=true`) share `SyncService`. HTTP off EDT; `showDownloadedTxns` + pending reconcile on EDT. Status bar / console describe the import, not that it ran because the file opened.
 - Progress: `MoneydanceGUI.setStatus("Lunch Flow: …", progress)` and Help → Console (`lunchflow:` via `System.err` + `AppDebug.ALL`). Never log the key.
 - From date: this run is `min(From in the table, lastPosted − 7 days, oldest open Lunch Flow hold − 1 day)`. Seven days is timezone/weekend/holiday clearing, not auth life. Open holds come from register `lunchflow:pending:` dates so a live auth is never treated as vanished. Blank From **and** no last posted omits `from=` (all history). After a **successful** import, persist From as `max(current From, lastPosted − 7)` so it only walks **forward** (a long-lived hold extends the **fetch**, not the saved From). User can type an older From to backfill; then it walks forward again. `from=` older than the bank/consent window should 200 with fewer rows, not 4xx (see [docs/lunchflow-api.md](docs/lunchflow-api.md)).
 - Posted FITID `lunchflow:{accountId}:{txnId}`; pending `lunchflow:pending:…`. Skip only live register `ParentTxn` FITIDs. Pending set-reconcile **unconfirmed** (`isNew`) pending parents on the mapped account only; never `deleteItem` confirmed rows.
@@ -149,7 +149,7 @@ DevKit / API: https://infinitekind.com/developer and https://infinitekind.com/de
 
 - Settings: paste API key, **Save key** / **Refresh accounts**, clear 401/403 copy. Refresh is the connection test (no separate Test button).
 - Account mapping: Lunch Flow `name` · `institution_name` → Moneydance account + From date. Persist on Import and window close, not a Save mappings button.
-- **Import** and optional auto-import on `md:file:opened` (per-file checkbox, default **off**). Status bar + Help → Console. Never log the API key. Cancel-in-progress is still missing.
+- **Import** and optional **Automatically import** on `md:file:opened` (per-file checkbox, default **off**). Status bar + Help → Console. Never log the API key. Cancel-in-progress is still missing.
 - Help (**Setup guide**) opens [docs/user/setup.md](docs/user/setup.md) on GitHub. Keep that guide non-technical: we own the overall flow; link Lunch Flow’s pages for their UI instead of duplicating “click here” for their screens. User-facing docs live in `docs/user/` (not the architecture notes). Update them in the same change as UI copy.
 
 ## Verification

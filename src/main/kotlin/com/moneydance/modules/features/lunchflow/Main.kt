@@ -103,12 +103,12 @@ class Main : FeatureModule() {
         val book = getContext()?.currentAccountBook ?: return
         val store = SettingsStore.fromBook(book) ?: return
         if (!store.importOnOpen()) {
-            MdNotify.log("skip auto-import (disabled for this file)")
+            MdNotify.log("skip import (disabled for this file)")
             return
         }
         val key = store.apiKey()
         if (key.isNullOrEmpty()) {
-            MdNotify.log("skip auto-import (no API key)")
+            MdNotify.log("skip import (no API key)")
             return
         }
         val maps = store.mappings()
@@ -118,7 +118,6 @@ class Main : FeatureModule() {
             gui = gui,
             mappings = maps,
             key = key,
-            reason = "auto-import",
             onStatus = { text -> liveWindow()?.showStatus(text) },
             onBusy = { running -> liveWindow()?.setImportBusy(running) },
             onAccounts = { accounts -> liveWindow()?.showAccounts(accounts) },
