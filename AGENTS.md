@@ -137,7 +137,7 @@ Keep the API client free of Swing. Keep Swing free of raw JSON.
 - Entry point extends `com.moneydance.apps.md.controller.FeatureModule`.
 - `init()` runs at app start: GUI and data file may **not** exist yet. Register the feature there; open windows on `invoke()` or `md:file:opened`.
 - Package the class as `com/moneydance/modules/features/lunchflow/Main.class` plus `meta_info.dict`.
-- **Do not create register `ParentTxn`s for import.** Staging is `OnlineTxn`; Moneydance’s converter creates the parent. Pending promote/delete may edit or `deleteItem` unconfirmed parents we tagged. Never `syncItem()` only on a split.
+- **Do not create register `ParentTxn`s for import.** Staging is `OnlineTxn`; Moneydance’s converter creates the parent. Pending promote/delete may edit or `deleteItem` our `lunchflow:pending:` parents, including after Confirm. Never `syncItem()` only on a split.
 - Amounts are integer minor units in Moneydance; Lunch Flow amounts are decimal. Convert via the account’s `CurrencyType`.
 - `SplitTxn.amount` is the wrong sign. Use `value` / `parentAmount` as documented by Infinite Kind.
 - `minbuild` in `meta_info.dict` should track the oldest MD build we actually test (start at 2024 / build 5100+ unless we prove older).
