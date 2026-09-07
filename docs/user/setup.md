@@ -4,6 +4,10 @@ Work through this **before** you paste anything into Moneydance. The goal is a L
 
 Lunch Flow’s own help is linked below. Their “API destination” page is written for programmers in places; you only need the key. Ignore anything about `x-api-key` headers.
 
+## Sign up
+
+Using [this signup link](https://www.lunchflow.app/?atp=TZjRiV) is a way to support the extension: Lunch Flow pays me a referral. Same product and price. You can also go to [lunchflow.app](https://www.lunchflow.app/) with no referral; Import works the same.
+
 ## 1. Create a Lunch Flow account and connect your banks
 
 Lunch Flow’s [QuickStart](https://www.lunchflow.app/docs/guides/get-started/quickstart) covers signing up and connecting a bank. In short: you log in at [lunchflow.app](https://www.lunchflow.app/), add a connection, and complete the bank’s own login (read-only). Lunch Flow never needs your bank password.
