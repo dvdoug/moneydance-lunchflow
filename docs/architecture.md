@@ -68,7 +68,7 @@ Store non-secrets in `AccountBook` local storage under `lunchflow.*` (`lunchflow
 
 Write `OnlineTxn`s into `account.getDownloadedTxns()`, then call **`MoneydanceGUI.showDownloadedTxns(account)`** so Moneydance’s own `OnlineTxnMerger` creates unconfirmed register rows (`ol.orig-txn`, Confirm, Merge Choices). That is the OFX path. Do not create `ParentTxn`s ourselves.
 
-- **Confirm** = standalone register txn. **Merge** = combine with an existing row. Merge copies **FITID** onto the survivor; next sync skips it. Delete without confirm → it comes back.
+- **Confirm** = standalone register txn. **Merge** = combine with an existing row. Merge copies the FITID from the original download snapshot (`ol.orig-txn`) onto the survivor; next sync skips a posted id. Settlement rewrites that snapshot, so a merge after the hold has posted keeps the posted id. Delete without confirm → it comes back. A merged reminder keeps its description and splits.
 - **Automatically Merge Downloaded Transactions** is the user’s pref; we do not force it.
 - **Cleared** follows **Mark as Cleared When Confirmed**.
 
@@ -85,7 +85,7 @@ Pending set-reconcile applies to register `ParentTxn`s we tagged with `lunchflow
 
 Same pending FITID still in Lunch Flow: if the **amount** changed, rewrite that parent (one category split only; keep the register’s existing sign; Description/memo from the current Lunch Flow txn). Description-only changes wait until settle.
 
-Pending → posted, **unique** match (exact amount, merchant case-insensitive, date within 7 days, 1:1): retarget that parent to the posted FITID, write the posted payee and memo. Ambiguous, amount-changed at capture, or vanished: `deleteItem` that pending parent (confirmed or not) and add a posted download when Lunch Flow has one. Auth £100 / capture £95 with no still-pending id must not leave both amounts in the register.
+Pending → posted: a real Lunch Flow id (not `synth:`) retargets that parent to the posted FITID and rewrites `ol.orig-txn`, even when Merge kept the reminder name. Copy the posted payee and memo only on an unconfirmed one-category hold. A confirmed row or a split keeps its description, memo, and splits. Synthetic holds, and real ids that change at capture, still settle a confirmed or split row when absolute amount and date (within 7 days) are unique. An unconfirmed hold can also match on absolute amount, merchant, and that date window. Ambiguous, amount-changed at capture, or vanished: `deleteItem` that pending parent (confirmed or not) and add a posted download when Lunch Flow has one. Auth £100 / capture £95 with no still-pending id must not leave both amounts in the register.
 
 ## First import window
 

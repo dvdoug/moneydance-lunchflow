@@ -42,7 +42,7 @@ New rows appear in the Moneydance register as **unconfirmed downloads** (a solid
 - **Confirm** keeps the new row.
 - **Merge** combines it with a matching row you already typed.
 
-Pending card holds appear as ordinary unconfirmed downloads (blue dot). You can Confirm the blue dot while it is still a hold. When it posts for the same amount, a later Import updates that same row (including the Description). If the settled amount is different, Import removes the hold and brings in the posted amount as a new download (so you are not left with both).
+Pending card holds appear as ordinary unconfirmed downloads (blue dot). You can Confirm or Merge the blue dot while it is still a hold. When it posts for the same amount, a later Import keeps that row. A hold you have not renamed takes the posted description. A reminder you Merged, including one with several categories, keeps that description and those categories. Merging after it has posted leaves the reminder alone on later imports. If the settled amount is different, Import removes the hold and brings in the posted amount as a new download (so you are not left with both).
 
 If you already typed the spend (or a reminder created it), **Merge** the download into that row. Moneydance keeps your original Description.
 

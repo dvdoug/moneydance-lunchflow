@@ -18,7 +18,7 @@ Ship an unofficial Moneydance extension, authored by **Doug Wright**, that is **
 - User pastes their Lunch Flow **Personal API** key in Settings (never hardcoded).
 - User maps Lunch Flow accounts to Moneydance accounts.
 - User imports (manually, and optionally when the data file opens).
-- **Posted** transactions import once (FITID) via Moneydance’s download converter. **Pending** authorisations import as unconfirmed rows. If a dropped pending uniquely matches a new posted row on date, merchant, and exact amount, **update that row in place** (posted payee/memo) — including if the user already confirmed the blue dot. Otherwise **delete that Lunch Flow hold** (even if confirmed) and add the posted **download**. Reminder or typed rows are left for Merge.
+- **Posted** transactions import once (FITID) via Moneydance’s download converter. **Pending** authorisations import as unconfirmed rows. When that hold posts, **update the same row in place**, including after Confirm or Merge. A plain unconfirmed hold takes the posted payee and memo. A reminder the user already merged keeps its description and splits. If the amount changed, or the match is ambiguous, **delete that Lunch Flow hold** (even if confirmed) and add the posted **download**. Reminder or typed rows that do not carry our pending FITID are left for Merge.
 - Quality is high enough to list in **both** the Moneydance extension directory and Lunch Flow’s destination list.
 
 ## What “functionally equivalent to Moneydance+” means here

@@ -32,6 +32,20 @@ object FitIds {
 
     fun isOurs(fitId: String?): Boolean = isPosted(fitId) || isPending(fitId)
 
+    /**
+     * Real Lunch Flow id inside `lunchflow:pending:{accountId}:{id}`.
+     * Synthetic holds (`synth:…`) have no posted id to follow.
+     */
+    fun pendingTransactionId(fitId: String?): String? {
+        if (!isPending(fitId)) return null
+        val rest = fitId!!.removePrefix(PREFIX_PENDING)
+        val splitAt = rest.indexOf(':')
+        if (splitAt <= 0 || splitAt >= rest.length - 1) return null
+        val tail = rest.substring(splitAt + 1)
+        if (tail.startsWith("synth:")) return null
+        return tail.takeIf { it.isNotBlank() }
+    }
+
     fun synthHash(txn: LunchFlowTransaction): String {
         val raw = listOf(
             txn.date,

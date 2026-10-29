@@ -21,5 +21,8 @@ class FitIdsTest {
         assertTrue(FitIds.isOurs("lunchflow:pending:7:abc"))
         assertTrue(FitIds.isOurs("lunchflow:7:abc"))
         assertFalse(FitIds.isOurs("ofx-other"))
+        assertEquals("abc", FitIds.pendingTransactionId("lunchflow:pending:7:abc"))
+        assertEquals(null, FitIds.pendingTransactionId(key))
+        assertEquals(null, FitIds.pendingTransactionId("lunchflow:7:abc"))
     }
 }

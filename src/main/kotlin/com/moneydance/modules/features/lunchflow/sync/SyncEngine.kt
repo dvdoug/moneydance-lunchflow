@@ -6,6 +6,7 @@ import com.infinitekind.moneydance.model.ParentTxn
 import com.moneydance.modules.features.lunchflow.api.LunchFlowAccount
 import com.moneydance.modules.features.lunchflow.api.LunchFlowTransaction
 import com.moneydance.modules.features.lunchflow.settings.AccountMapping
+import com.moneydance.modules.features.lunchflow.ui.MdNotify
 import java.time.LocalDate
 
 data class AccountSyncResult(
@@ -60,9 +61,12 @@ class SyncEngine(
         }
 
         val newPosted = postedLf.filter { FitIds.posted(lfAccount.id, it.id!!) !in known }
-        val dropped = ourPending.filterKeys { it !in desiredPending }.mapNotNull { (key, parent) ->
-            val snap = snapshotFromParent(mdAccount, parent) ?: return@mapNotNull null
-            key to snap
+        val dropped = ourPending.filterKeys { it !in desiredPending }.map { (key, parent) ->
+            OpenHold(
+                key = key,
+                txn = snapshotFromParent(mdAccount, parent, FitIds.pendingTransactionId(key)),
+                userOwned = !MdAccess.isNew(parent) || MdAccess.splitCount(parent) != 1
+            )
         }
         val promotions = PendingMatch.uniquePairs(dropped, newPosted)
         val promotedPostedIds = promotions.mapNotNull { it.posted.id }.toSet()
@@ -80,7 +84,12 @@ class SyncEngine(
         for (pair in promotions) {
             val existing = ourPending.remove(pair.pendingKey) ?: continue
             val fitId = FitIds.posted(lfAccount.id, pair.posted.id!!)
-            MdAccess.promotePending(existing, pair.posted.payee(), pair.posted.memo(), fitId)
+            if (pair.keepRegisterText) {
+                MdAccess.settleFitId(existing, fitId)
+                MdNotify.log("settled ${pair.pendingKey} kept register description -> $fitId")
+            } else {
+                MdAccess.promotePending(existing, pair.posted.payee(), pair.posted.memo(), fitId)
+            }
             known.add(fitId)
             pendingPromoted++
             latestPosted = maxDate(latestPosted, pair.posted.date)
@@ -204,10 +213,14 @@ class SyncEngine(
         return ids
     }
 
-    private fun snapshotFromParent(mdAccount: Account, parent: ParentTxn): LunchFlowTransaction? {
+    private fun snapshotFromParent(
+        mdAccount: Account,
+        parent: ParentTxn,
+        txnId: String?
+    ): LunchFlowTransaction {
         val desc = MdAccess.getDescription(parent).orEmpty().trim()
         return LunchFlowTransaction(
-            id = null,
+            id = txnId,
             accountId = 0,
             amount = MdAccess.toMajorUnits(mdAccount, MdAccess.getValue(parent)),
             currency = MdAccess.currencyId(mdAccount),

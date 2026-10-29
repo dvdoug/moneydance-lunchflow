@@ -9,6 +9,11 @@ Reconstructed from the 2026-08-29 development session. There are no git tags for
 
 ## Unreleased
 
+## 55 - 2026-10-29
+
+### Fixed
+- Settling a hold keeps a reminder you already merged, including its splits. Merging after it has posted keeps the settled id.
+
 ## 54 - 2026-09-05
 
 ### Removed
